@@ -2,6 +2,7 @@ package org.adrian.mypetclinic.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.adrian.mypetclinic.domain.PetType;
 
 import java.util.List;
 
@@ -14,5 +15,6 @@ public class OwnerDetailDto extends PersonDto {
     private String telephone;
 
     private List<PetDto> pets;
+    private List<PetType> petTypes;
 
 }

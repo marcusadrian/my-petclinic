@@ -19,10 +19,6 @@ public class OwnerService {
         this.repository = repository;
     }
 
-    @Transactional(readOnly = true)
-    public List<Owner> findByLastNameStartingWith(String lastName) {
-        return findByLastNameStartingWith(lastName, Function.identity());
-    }
 
     @Transactional(readOnly = true)
     public <T> List<T> findByLastNameStartingWith(String lastName, Function<Owner, T> transformer) {
@@ -38,6 +34,11 @@ public class OwnerService {
     }
 
     @Transactional(readOnly = true)
+    public List<Owner> findByLastNameStartingWith(String lastName) {
+        return findByLastNameStartingWith(lastName, Function.identity());
+    }
+
+    @Transactional(readOnly = true)
     public <T> Optional<T> findById(Long id, Function<Owner, T> transformer) {
         return repository.findById(id).map(transformer);
     }
@@ -46,5 +47,6 @@ public class OwnerService {
     public Optional<Owner> findById(Long id) {
         return findById(id, Function.identity());
     }
+
 
 }

@@ -17,8 +17,7 @@ package org.adrian.mypetclinic.rest;
 
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
-import org.adrian.mypetclinic.service.OwnerService;
-import org.adrian.mypetclinic.transform.OwnerTransformers;
+import org.adrian.mypetclinic.service.ViewAdapterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,20 +35,20 @@ import java.util.Optional;
 @RequestMapping("/owners")
 class OwnerController {
 
-    private final OwnerService service;
+    private final ViewAdapterService service;
 
-    OwnerController(OwnerService service) {
+    OwnerController(ViewAdapterService service) {
         this.service = service;
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Optional<OwnerDetailDto>> findByLastName(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(service.findById(id, OwnerTransformers.toDetailDto()));
+    ResponseEntity<Optional<OwnerDetailDto>> findById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(service.findOwnerDetailDtosById(id));
     }
 
     @GetMapping("/search")
     ResponseEntity<List<OwnerSummaryDto>> findByLastName(@RequestParam("lastName") String lastName) {
-        return ResponseEntity.ok(service.findByLastNameStartingWith(lastName, OwnerTransformers.toSummaryDto()));
+        return ResponseEntity.ok(service.findOwnerSummaryDtosByLastNameStartingWith(lastName));
     }
 
 }

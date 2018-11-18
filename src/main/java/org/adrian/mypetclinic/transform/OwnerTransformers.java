@@ -2,9 +2,11 @@ package org.adrian.mypetclinic.transform;
 
 import org.adrian.mypetclinic.domain.Owner;
 import org.adrian.mypetclinic.domain.Pet;
+import org.adrian.mypetclinic.domain.PetType;
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class OwnerTransformers {
@@ -23,7 +25,7 @@ public class OwnerTransformers {
         });
     }
 
-    public static GenericTransformer<Owner, OwnerDetailDto> toDetailDto() {
+    public static GenericTransformer<Owner, OwnerDetailDto> toDetailDto(List<PetType> petTypes) {
         return new GenericTransformer<>(OwnerDetailDto::new, (owner, dto) -> {
             dto.setId(owner.getId());
             dto.setFirstName(owner.getFirstName());
@@ -32,6 +34,7 @@ public class OwnerTransformers {
             dto.setCity(owner.getCity());
             dto.setTelephone(owner.getTelephone());
             dto.setPets(PetTransformers.toDto().apply(owner.getPets()));
+            dto.setPetTypes(petTypes);
         });
     }
 
