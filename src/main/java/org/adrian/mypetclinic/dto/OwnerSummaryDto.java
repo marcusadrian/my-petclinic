@@ -4,16 +4,14 @@ package org.adrian.mypetclinic.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Set;
-
 @Getter
 @Setter
-public class OwnerDto extends PersonDto {
+public class OwnerSummaryDto extends BaseDto {
 
+    private String name;
     private String address;
     private String city;
     private String telephone;
-
-    private Set<PetDto> pets;
+    private String petNames;
 
 }

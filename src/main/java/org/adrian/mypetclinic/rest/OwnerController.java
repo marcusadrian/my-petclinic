@@ -15,17 +15,15 @@
  */
 package org.adrian.mypetclinic.rest;
 
-import org.adrian.mypetclinic.domain.Owner;
-import org.adrian.mypetclinic.dto.OwnerDto;
+import org.adrian.mypetclinic.dto.OwnerDetailDto;
+import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.service.OwnerService;
 import org.adrian.mypetclinic.transform.OwnerTransformers;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Juergen Hoeller
@@ -44,8 +42,14 @@ class OwnerController {
         this.service = service;
     }
 
-    @GetMapping("/search")
-    ResponseEntity<List<OwnerDto>> findByLastName(@RequestParam("lastName") String lastName) {
-        return ResponseEntity.ok(service.findByLastNameStartingWith(lastName, OwnerTransformers.toDto()));
+    @GetMapping("/{id}")
+    ResponseEntity<Optional<OwnerDetailDto>> findByLastName(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(service.findById(id, OwnerTransformers.toDetailDto()));
     }
+
+    @GetMapping("/search")
+    ResponseEntity<List<OwnerSummaryDto>> findByLastName(@RequestParam("lastName") String lastName) {
+        return ResponseEntity.ok(service.findByLastNameStartingWith(lastName, OwnerTransformers.toSummaryDto()));
+    }
+
 }

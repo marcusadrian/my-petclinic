@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -35,4 +36,15 @@ public class OwnerService {
                 .map(transformer)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public <T> Optional<T> findById(Long id, Function<Owner, T> transformer) {
+        return repository.findById(id).map(transformer);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Owner> findById(Long id) {
+        return findById(id, Function.identity());
+    }
+
 }

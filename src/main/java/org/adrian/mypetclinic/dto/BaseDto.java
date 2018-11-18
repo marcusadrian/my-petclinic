@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NamedDto extends BaseDto {
-    private String name;
+public class BaseDto {
+    private Long id;
 }
