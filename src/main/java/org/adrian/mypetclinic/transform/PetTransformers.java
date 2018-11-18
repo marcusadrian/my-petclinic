@@ -7,6 +7,7 @@ import org.adrian.mypetclinic.dto.PetDto;
 import java.util.Optional;
 
 public class PetTransformers {
+
     public static GenericTransformer<Pet, PetDto> toDto() {
         return new GenericTransformer<>(PetDto::new, (pet, dto) -> {
             dto.setId(pet.getId());
@@ -16,6 +17,7 @@ public class PetTransformers {
                     .ofNullable(pet.getType())
                     .map(PetType::getName)
                     .orElse(null));
+            dto.setVisits(VisitTransformers.toDto().apply(pet.getVisits()));
         });
     }
 
