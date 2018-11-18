@@ -34,7 +34,7 @@ public class OwnerTransformers {
             dto.setCity(owner.getCity());
             dto.setTelephone(owner.getTelephone());
             dto.setPets(PetTransformers.toDto().apply(owner.getPets()));
-            dto.setPetTypes(petTypes);
+            dto.setPetTypes(PetTypeTransformers.toDto().apply(petTypes));
         });
     }
 

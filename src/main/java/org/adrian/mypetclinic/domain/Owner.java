@@ -15,7 +15,6 @@
  */
 package org.adrian.mypetclinic.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.core.style.ToStringCreator;
@@ -56,7 +55,6 @@ public class Owner extends Person {
     private String telephone;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-    @JsonIgnore
     private Set<Pet> pets = new HashSet<>();
 
     public List<Pet> getPets() {
