@@ -1,13 +1,13 @@
 package org.adrian.mypetclinic.transform;
 
 import org.adrian.mypetclinic.domain.Owner;
-import org.adrian.mypetclinic.domain.Pet;
 import org.adrian.mypetclinic.domain.PetType;
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
+import org.adrian.mypetclinic.dto.PetDto;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class OwnerTransformers {
 
@@ -18,10 +18,7 @@ public class OwnerTransformers {
             dto.setAddress(owner.getAddress());
             dto.setCity(owner.getCity());
             dto.setTelephone(owner.getTelephone());
-            String petNames = owner.getPets().stream()
-                    .map(Pet::getName)
-                    .collect(Collectors.joining(", "));
-            dto.setPetNames(petNames);
+            dto.setPetNames(PetTransformers.toCommaSeparatedString(owner.getPets()));
         });
     }
 
@@ -33,7 +30,9 @@ public class OwnerTransformers {
             dto.setAddress(owner.getAddress());
             dto.setCity(owner.getCity());
             dto.setTelephone(owner.getTelephone());
-            dto.setPets(PetTransformers.toDto().apply(owner.getPets()));
+            dto.setPets(PetTransformers.toDto().apply(
+                    owner.getPets(),
+                    Comparator.comparing(PetDto::getName)));
             dto.setPetTypes(PetTypeTransformers.toDto().apply(petTypes));
         });
     }

@@ -54,17 +54,10 @@ public class Owner extends Person {
     @Digits(fraction = 0, integer = 10)
     private String telephone;
 
+    @Getter
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private Set<Pet> pets = new HashSet<>();
 
-    public List<Pet> getPets() {
-
-        List<Pet> sortedPets = pets.stream()
-                .sorted(Comparator.comparing(pet -> pet.getName().toLowerCase()))
-                .collect(Collectors.toList());
-
-        return Collections.unmodifiableList(sortedPets);
-    }
 
     public void addPet(Pet pet) {
         if (pet.isNew()) {

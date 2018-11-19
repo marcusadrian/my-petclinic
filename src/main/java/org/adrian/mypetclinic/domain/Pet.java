@@ -23,8 +23,8 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.adrian.mypetclinic.util.MyPetclinicApplicationConstants.DATE_FORMAT;
 
@@ -54,17 +54,9 @@ public class Pet extends NamedEntity {
     @ManyToOne
     private Owner owner;
 
+    @Getter
     @OneToMany(mappedBy = "pet")
     private Set<Visit> visits = new HashSet<>();
-
-    public List<Visit> getVisits() {
-
-        List<Visit> sortedVisits = this.visits.stream()
-                .sorted(Comparator.comparing(Visit::getDate).reversed())
-                .collect(Collectors.toList());
-
-        return Collections.unmodifiableList(sortedVisits);
-    }
 
     public void addVisit(Visit visit) {
         this.visits.add(visit);
