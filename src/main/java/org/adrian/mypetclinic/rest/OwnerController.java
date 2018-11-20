@@ -22,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Juergen Hoeller
@@ -42,8 +41,8 @@ class OwnerController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Optional<OwnerDetailDto>> findById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(service.findOwnerDetailDtosById(id));
+    ResponseEntity<OwnerDetailDto> findById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(service.findOwnerDetailDtosById(id).get());
     }
 
     @GetMapping("/search")
