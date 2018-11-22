@@ -18,10 +18,15 @@ package org.adrian.mypetclinic.rest;
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.service.ViewAdapterService;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * @author Juergen Hoeller
@@ -40,9 +45,14 @@ class OwnerController {
         this.service = service;
     }
 
-    @GetMapping("/{id}")
-    ResponseEntity<OwnerDetailDto> findById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(service.findOwnerDetailDtosById(id).get());
+    @GetMapping(value = "/{id}", produces = "application/hal+json")
+    Resource<OwnerDetailDto> findById(@PathVariable("id") Long id) {
+        OwnerDetailDto owner = service.findOwnerDetailDtosById(id).get();
+        Link link = linkTo(
+                methodOn(OwnerController.class)
+                        .findById(owner.getId()))
+                .withSelfRel();
+        return new Resource<>(owner, link);
     }
 
     @GetMapping("/search")
