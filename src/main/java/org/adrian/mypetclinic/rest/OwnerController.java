@@ -19,6 +19,7 @@ import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.service.ViewAdapterService;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ class OwnerController {
         this.service = service;
     }
 
-    @GetMapping(value = "/{id}", produces = "application/hal+json")
+    @GetMapping(value = "/{id}", produces = MediaTypes.HAL_JSON_VALUE)
     Resource<OwnerDetailDto> findById(@PathVariable("id") Long id) {
         OwnerDetailDto owner = service.findOwnerDetailDtosById(id).get();
         Link link = linkTo(
