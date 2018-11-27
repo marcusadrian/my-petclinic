@@ -5,6 +5,7 @@ import org.adrian.mypetclinic.domain.PetType;
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.dto.PetDto;
+import org.adrian.mypetclinic.repo.PetTypeRepository;
 
 import java.util.Comparator;
 import java.util.List;
@@ -22,7 +23,7 @@ public class OwnerTransformers {
         });
     }
 
-    public static GenericTransformer<Owner, OwnerDetailDto> toDetailDto(List<PetType> petTypes) {
+    public static GenericTransformer<Owner, OwnerDetailDto> toDetailDto(PetTypeRepository petTypeRepository) {
         return new GenericTransformer<>(OwnerDetailDto::new, (owner, dto) -> {
             dto.setId(owner.getId());
             dto.setFirstName(owner.getFirstName());
@@ -33,7 +34,7 @@ public class OwnerTransformers {
             dto.setPets(PetTransformers.toDto().apply(
                     owner.getPets(),
                     Comparator.comparing(PetDto::getName)));
-            dto.setPetTypes(PetTypeTransformers.toDto().apply(petTypes));
+            dto.setPetTypes(PetTypeTransformers.toDto().apply(petTypeRepository.findAll()));
         });
     }
 
