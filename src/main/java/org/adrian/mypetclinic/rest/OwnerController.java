@@ -48,7 +48,7 @@ class OwnerController {
 
     @GetMapping(value = "/{id}", produces = MediaTypes.HAL_JSON_VALUE)
     Resource<OwnerDetailDto> findById(@PathVariable("id") Long id) {
-        OwnerDetailDto owner = service.findOwnerDetailDtosById(id).get();
+        OwnerDetailDto owner = service.findOwnerDetailDtoById(id).get();
         Link link = linkTo(
                 methodOn(OwnerController.class)
                         .findById(owner.getId()))

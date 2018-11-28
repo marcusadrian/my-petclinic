@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -21,7 +22,9 @@ public class OwnerService {
 
 
     @Transactional(readOnly = true)
-    public <T> List<T> findByLastNameStartingWith(String lastName, Function<Owner, T> transformer) {
+    public <T> List<T> findByLastNameStartingWith(String lastName, Function<Owner, T> transformer,
+                                                  Comparator<? super T> sort) {
+
         List<Owner> owners;
         if (StringUtils.hasText(lastName)) {
             owners = repository.findByLastNameStartingWith(lastName);
@@ -30,12 +33,13 @@ public class OwnerService {
         }
         return owners.stream()
                 .map(transformer)
+                .sorted(sort)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<Owner> findByLastNameStartingWith(String lastName) {
-        return findByLastNameStartingWith(lastName, Function.identity());
+    public List<Owner> findByLastNameStartingWith(String lastName, Comparator<? super Owner> sort) {
+        return findByLastNameStartingWith(lastName, Function.identity(), sort);
     }
 
     @Transactional(readOnly = true)

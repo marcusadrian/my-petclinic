@@ -6,6 +6,7 @@ import org.adrian.mypetclinic.repo.PetTypeRepository;
 import org.adrian.mypetclinic.transform.OwnerTransformers;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +22,13 @@ public class ViewAdapterService {
     }
 
     public List<OwnerSummaryDto> findOwnerSummaryDtosByLastNameStartingWith(String lastName) {
-        return ownerService.findByLastNameStartingWith(lastName, OwnerTransformers.toSummaryDto());
+        return ownerService.findByLastNameStartingWith(
+                lastName,
+                OwnerTransformers.toSummaryDto(),
+                Comparator.comparing(OwnerSummaryDto::getName));
     }
 
-    public Optional<OwnerDetailDto> findOwnerDetailDtosById(Long id) {
+    public Optional<OwnerDetailDto> findOwnerDetailDtoById(Long id) {
         return ownerService.findById(id, OwnerTransformers.toDetailDto(petTypeRepository));
     }
 
