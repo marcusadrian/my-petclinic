@@ -21,10 +21,11 @@ import org.adrian.mypetclinic.service.ViewAdapterService;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
-import org.springframework.http.ResponseEntity;
+import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -56,9 +57,16 @@ class OwnerController {
         return new Resource<>(owner, link);
     }
 
-    @GetMapping("/search")
-    ResponseEntity<List<OwnerSummaryDto>> findByLastName(@RequestParam("lastName") String lastName) {
-        return ResponseEntity.ok(service.findOwnerSummaryDtosByLastNameStartingWith(lastName));
+    @GetMapping(value = "/search", produces = MediaTypes.HAL_JSON_VALUE)
+    Resources<Resource<OwnerSummaryDto>> findByLastName(@RequestParam("lastName") String lastName) {
+        List<Resource<OwnerSummaryDto>> owners = service.findOwnerSummaryDtosByLastNameStartingWith(lastName)
+                .stream()
+                .map(owner -> new Resource<>(owner,
+                        linkTo(methodOn(OwnerController.class).findById(owner.getId())).withRel("owner")))
+                .collect(Collectors.toList());
+        return new Resources<>(owners,
+                linkTo(methodOn(OwnerController.class).findByLastName(lastName)).withSelfRel());
+
     }
 
 }
