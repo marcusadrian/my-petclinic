@@ -3,9 +3,11 @@ package org.adrian.mypetclinic.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.core.Relation;
 
 @Getter
 @Setter
+@Relation(collectionRelation = "owners")
 public class OwnerSummaryDto extends BaseDto {
 
     private String name;
