@@ -27,7 +27,7 @@ public class OwnerService {
 
         List<Owner> owners;
         if (StringUtils.hasText(lastName)) {
-            owners = repository.findByLastNameStartingWith(lastName);
+            owners = repository.findByLastNameIgnoreCaseStartingWith(lastName);
         } else {
             owners = repository.findAll();
         }

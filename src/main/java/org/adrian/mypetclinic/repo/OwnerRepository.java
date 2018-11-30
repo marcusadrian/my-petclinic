@@ -40,6 +40,6 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
      * @return a Collection of matching {@link Owner}s (or an empty Collection if none
      * found)
      */
-    List<Owner> findByLastNameStartingWith(@Param("lastName") String lastName);
+    List<Owner> findByLastNameIgnoreCaseStartingWith(@Param("lastName") String lastName);
 
 }
