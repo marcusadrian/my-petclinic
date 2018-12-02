@@ -4,11 +4,13 @@ import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
 import org.adrian.mypetclinic.transform.OwnerTransformers;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.Resource;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 public class ViewAdapterService {
@@ -21,11 +23,13 @@ public class ViewAdapterService {
         this.petTypeRepository = petTypeRepository;
     }
 
-    public List<OwnerSummaryDto> findOwnerSummaryDtosByLastNameStartingWith(String lastName) {
+    public Page<Resource<OwnerSummaryDto>> findOwnerSummaryDtosByLastNameStartingWith(
+            String lastName, Pageable pageable, Function<OwnerSummaryDto, Resource<OwnerSummaryDto>> toResource) {
+
         return ownerService.findByLastNameStartingWith(
                 lastName,
-                OwnerTransformers.toSummaryDto(),
-                Comparator.comparing(OwnerSummaryDto::getName));
+                OwnerTransformers.toSummaryDto().andThen(toResource),
+                pageable);
     }
 
     public Optional<OwnerDetailDto> findOwnerDetailDtoById(Long id) {

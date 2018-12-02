@@ -18,14 +18,14 @@ package org.adrian.mypetclinic.rest;
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.service.ViewAdapterService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -58,15 +58,13 @@ class OwnerController {
     }
 
     @GetMapping(value = "/search", produces = MediaTypes.HAL_JSON_VALUE)
-    Resources<Resource<OwnerSummaryDto>> findByLastName(@RequestParam("lastName") String lastName) {
-        List<Resource<OwnerSummaryDto>> owners = service.findOwnerSummaryDtosByLastNameStartingWith(lastName)
-                .stream()
-                .map(owner -> new Resource<>(owner,
-                        linkTo(methodOn(OwnerController.class).findById(owner.getId())).withRel("owner")))
-                .collect(Collectors.toList());
-        return new Resources<>(owners,
-                linkTo(methodOn(OwnerController.class).findByLastName(lastName)).withSelfRel());
+    Page<Resource<OwnerSummaryDto>> findByLastName(@RequestParam("lastName") String lastName, Pageable pageable) {
 
+        Function<OwnerSummaryDto, Resource<OwnerSummaryDto>> toResource =
+                dto -> new Resource<>(dto,
+                        linkTo(methodOn(OwnerController.class).findById(dto.getId())).withRel("owner"));
+
+        return service.findOwnerSummaryDtosByLastNameStartingWith(lastName, pageable, toResource);
     }
 
 }

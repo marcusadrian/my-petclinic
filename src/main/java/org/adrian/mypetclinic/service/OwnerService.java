@@ -2,15 +2,16 @@ package org.adrian.mypetclinic.service;
 
 import org.adrian.mypetclinic.domain.Owner;
 import org.adrian.mypetclinic.repo.OwnerRepository;
+import org.adrian.mypetclinic.transform.GeneralTransformers;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class OwnerService {
@@ -22,24 +23,20 @@ public class OwnerService {
 
 
     @Transactional(readOnly = true)
-    public <T> List<T> findByLastNameStartingWith(String lastName, Function<Owner, T> transformer,
-                                                  Comparator<? super T> sort) {
+    public <T> Page<T> findByLastNameStartingWith(String lastName, Function<Owner, T> transformer, Pageable pageable) {
 
-        List<Owner> owners;
+        Page<Owner> owners;
         if (StringUtils.hasText(lastName)) {
-            owners = repository.findByLastNameIgnoreCaseStartingWith(lastName);
+            owners = repository.findByLastNameIgnoreCaseStartingWith(lastName, pageable);
         } else {
-            owners = repository.findAll();
+            owners = repository.findAll(pageable);
         }
-        return owners.stream()
-                .map(transformer)
-                .sorted(sort)
-                .collect(Collectors.toList());
+        return GeneralTransformers.pageTransformer(transformer, pageable).apply(owners);
     }
 
     @Transactional(readOnly = true)
-    public List<Owner> findByLastNameStartingWith(String lastName, Comparator<? super Owner> sort) {
-        return findByLastNameStartingWith(lastName, Function.identity(), sort);
+    public Page<Owner> findByLastNameStartingWith(String lastName, Comparator<? super Owner> sort, Pageable pageable) {
+        return findByLastNameStartingWith(lastName, Function.identity(), pageable);
     }
 
     @Transactional(readOnly = true)
