@@ -16,10 +16,8 @@
 package org.adrian.mypetclinic.repo;
 
 import org.adrian.mypetclinic.domain.Owner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 /**
  * Repository class for {@link Owner} domain objects.
@@ -30,16 +28,5 @@ import org.springframework.data.repository.query.Param;
  * @author Michael Isvy
  * @author Marcus Adrian
  */
-public interface OwnerRepository extends JpaRepository<Owner, Long> {
-
-    /**
-     * Retrieve {@link Owner}s from the data store by last name, returning all owners
-     * whose last name <i>starts</i> with the given name.
-     *
-     * @param lastName Value to search for
-     * @return a Collection of matching {@link Owner}s (or an empty Collection if none
-     * found)
-     */
-    Page<Owner> findByLastNameIgnoreCaseStartingWith(@Param("lastName") String lastName, Pageable pageable);
-
+public interface OwnerRepository extends JpaRepository<Owner, Long>, QuerydslPredicateExecutor<Owner> {
 }

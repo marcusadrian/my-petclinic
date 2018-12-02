@@ -1,6 +1,8 @@
 package org.adrian.mypetclinic.service;
 
+import com.querydsl.core.types.Predicate;
 import org.adrian.mypetclinic.domain.Owner;
+import org.adrian.mypetclinic.domain.QOwner;
 import org.adrian.mypetclinic.repo.OwnerRepository;
 import org.adrian.mypetclinic.transform.GeneralTransformers;
 import org.springframework.data.domain.Page;
@@ -27,7 +29,8 @@ public class OwnerService {
 
         Page<Owner> owners;
         if (StringUtils.hasText(lastName)) {
-            owners = repository.findByLastNameIgnoreCaseStartingWith(lastName, pageable);
+            Predicate predicate = QOwner.owner.lastName.startsWithIgnoreCase(lastName);
+            owners = repository.findAll(predicate, pageable);
         } else {
             owners = repository.findAll(pageable);
         }
