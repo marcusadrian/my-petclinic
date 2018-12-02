@@ -6,11 +6,9 @@ import org.adrian.mypetclinic.repo.PetTypeRepository;
 import org.adrian.mypetclinic.transform.OwnerTransformers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 @Service
 public class ViewAdapterService {
@@ -23,12 +21,12 @@ public class ViewAdapterService {
         this.petTypeRepository = petTypeRepository;
     }
 
-    public Page<Resource<OwnerSummaryDto>> findOwnerSummaryDtosByLastNameStartingWith(
-            String lastName, Pageable pageable, Function<OwnerSummaryDto, Resource<OwnerSummaryDto>> toResource) {
+    public Page<OwnerSummaryDto> findOwnerSummaryDtosByLastNameStartingWith(
+            String lastName, Pageable pageable) {
 
         return ownerService.findByLastNameStartingWith(
                 lastName,
-                OwnerTransformers.toSummaryDto().andThen(toResource),
+                OwnerTransformers.toSummaryDto(),
                 pageable);
     }
 

@@ -20,12 +20,9 @@ import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.service.ViewAdapterService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.Resource;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.*;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.function.Function;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -58,13 +55,22 @@ class OwnerController {
     }
 
     @GetMapping(value = "/search", produces = MediaTypes.HAL_JSON_VALUE)
-    Page<Resource<OwnerSummaryDto>> findByLastName(@RequestParam("lastName") String lastName, Pageable pageable) {
+    PagedResources<Resource<OwnerSummaryDto>> findByLastName(@RequestParam("lastName") String lastName,
+                                                             Pageable pageable,
+                                                             PagedResourcesAssembler<OwnerSummaryDto> pagedResourcesAssembler) {
 
-        Function<OwnerSummaryDto, Resource<OwnerSummaryDto>> toResource =
-                dto -> new Resource<>(dto,
-                        linkTo(methodOn(OwnerController.class).findById(dto.getId())).withRel("owner"));
+        Page<OwnerSummaryDto> page = service.findOwnerSummaryDtosByLastNameStartingWith(lastName, pageable);
 
-        return service.findOwnerSummaryDtosByLastNameStartingWith(lastName, pageable, toResource);
+        ResourceAssembler<OwnerSummaryDto, Resource<OwnerSummaryDto>> resourceAssembler = owner ->
+                new Resource<>(owner,
+                        linkTo(methodOn(OwnerController.class).findById(owner.getId())).withRel("owner"));
+
+        Link selfLink = linkTo(methodOn(OwnerController.class)
+                .findByLastName(lastName, pageable, pagedResourcesAssembler))
+                .withSelfRel();
+
+        return pagedResourcesAssembler.toResource(page, resourceAssembler, selfLink);
+
     }
 
 }
