@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -38,7 +37,7 @@ public class OwnerService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Owner> findByLastNameStartingWith(String lastName, Comparator<? super Owner> sort, Pageable pageable) {
+    public Page<Owner> findByLastNameStartingWith(String lastName, Pageable pageable) {
         return findByLastNameStartingWith(lastName, Function.identity(), pageable);
     }
 
