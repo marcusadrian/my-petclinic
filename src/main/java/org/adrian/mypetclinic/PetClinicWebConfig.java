@@ -24,6 +24,7 @@ public class PetClinicWebConfig implements WebMvcConfigurer {
 
         // redirect to index.html for request of the context root
         registry.addViewController("/").setViewName(indexRedirect);
+        registry.addViewController("/index.html").setViewName(indexRedirect);
         // forward to index.html for request of the webapp root
         registry.addViewController(String.format("/%s", wepappFolder)).setViewName(indexForward);
         registry.addViewController(String.format("/%s/", wepappFolder)).setViewName(indexForward);
