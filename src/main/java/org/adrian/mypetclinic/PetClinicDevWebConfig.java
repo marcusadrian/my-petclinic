@@ -3,7 +3,6 @@ package org.adrian.mypetclinic;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * During front development, a nodejs server runs to serve the Angular SPA.
@@ -12,11 +11,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * distributed jar with no cross origin involved.
  */
 @Configuration
-@Profile("dev")
-public class DevWebConfig implements WebMvcConfigurer {
+@Profile(PetclinicApplication.DEV_PROFILE)
+public class PetClinicDevWebConfig extends PetClinicWebConfig {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**");
     }
+
 }
