@@ -5,7 +5,6 @@ import org.adrian.mypetclinic.domain.Owner;
 import org.adrian.mypetclinic.domain.QOwner;
 import org.adrian.mypetclinic.repo.OwnerRepository;
 import org.adrian.mypetclinic.transform.GeneralTransformers;
-import org.adrian.mypetclinic.util.PageRequestBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,6 @@ public class OwnerService {
         this.repository = repository;
     }
 
-
     @Transactional(readOnly = true)
     public <T> Page<T> findByLastNameStartingWith(String lastName, Function<Owner, T> transformer, Pageable pageable) {
 
@@ -31,12 +29,6 @@ public class OwnerService {
         if (StringUtils.hasText(lastName)) {
             Predicate predicate = QOwner.owner.lastName.startsWithIgnoreCase(lastName);
             ownerPage = repository.findAll(predicate, pageable);
-            // if requested page doesn't exist (out of range), return the first page
-            if (ownerPage.getNumber() >= ownerPage.getTotalPages()) {
-                pageable = PageRequestBuilder.of(pageable).pageNumber(0).build();
-                ownerPage = repository.findAll(predicate, pageable);
-            }
-
         } else {
             ownerPage = repository.findAll(pageable);
         }
