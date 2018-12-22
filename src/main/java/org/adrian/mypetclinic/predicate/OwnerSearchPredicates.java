@@ -11,7 +11,10 @@ public class OwnerSearchPredicates {
     public static Predicate ownerSearch(OwnerSearchCriteria criteria) {
         return ExpressionUtils.allOf(
                 firstName(criteria),
-                lastName(criteria));
+                lastName(criteria),
+                address(criteria),
+                city(criteria),
+                telephone(criteria));
     }
 
     private static Predicate firstName(OwnerSearchCriteria criteria) {
@@ -24,6 +27,24 @@ public class OwnerSearchPredicates {
         return QuerydslPredicateUtils.createPredicate(criteria,
                 OwnerSearchCriteria::getLastName,
                 QOwner.owner.lastName::startsWithIgnoreCase);
+    }
+
+    private static Predicate address(OwnerSearchCriteria criteria) {
+        return QuerydslPredicateUtils.createPredicate(criteria,
+                OwnerSearchCriteria::getAddress,
+                QOwner.owner.address::containsIgnoreCase);
+    }
+
+    private static Predicate city(OwnerSearchCriteria criteria) {
+        return QuerydslPredicateUtils.createPredicate(criteria,
+                OwnerSearchCriteria::getCity,
+                QOwner.owner.city::startsWithIgnoreCase);
+    }
+
+    private static Predicate telephone(OwnerSearchCriteria criteria) {
+        return QuerydslPredicateUtils.createPredicate(criteria,
+                OwnerSearchCriteria::getTelephone,
+                QOwner.owner.telephone::containsIgnoreCase);
     }
 
 }
