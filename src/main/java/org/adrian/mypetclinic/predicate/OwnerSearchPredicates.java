@@ -14,7 +14,8 @@ public class OwnerSearchPredicates {
                 lastName(criteria),
                 address(criteria),
                 city(criteria),
-                telephone(criteria));
+                telephone(criteria),
+                petName(criteria));
     }
 
     private static Predicate firstName(OwnerSearchCriteria criteria) {
@@ -45,6 +46,12 @@ public class OwnerSearchPredicates {
         return QuerydslPredicateUtils.createPredicate(criteria,
                 OwnerSearchCriteria::getTelephone,
                 QOwner.owner.telephone::containsIgnoreCase);
+    }
+
+    private static Predicate petName(OwnerSearchCriteria criteria) {
+        return QuerydslPredicateUtils.createPredicate(criteria,
+                OwnerSearchCriteria::getPetName,
+                QOwner.owner.pets.any().name::startsWithIgnoreCase);
     }
 
 }

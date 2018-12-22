@@ -9,4 +9,5 @@ public class OwnerSearchCriteria {
     private String address;
     private String city;
     private String telephone;
+    private String petName;
 }
