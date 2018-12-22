@@ -26,7 +26,7 @@ public class ViewAdapterService {
             OwnerSearchCriteria criteria, Pageable pageable) {
 
         return ownerService.findOwners(
-                OwnerSearchPredicates.lastName(criteria),
+                OwnerSearchPredicates.ownerSearch(criteria),
                 OwnerTransformers.toSummaryDto(),
                 pageable);
     }
