@@ -17,12 +17,16 @@ package org.adrian.mypetclinic.rest;
 
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
+import org.adrian.mypetclinic.service.OwnerSearchCriteria;
 import org.adrian.mypetclinic.service.ViewAdapterService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -55,18 +59,18 @@ class OwnerController {
     }
 
     @GetMapping(value = "/search", produces = MediaTypes.HAL_JSON_VALUE)
-    PagedResources<Resource<OwnerSummaryDto>> findByLastName(@RequestParam("lastName") String lastName,
+    PagedResources<Resource<OwnerSummaryDto>> findByCriteria(OwnerSearchCriteria criteria,
                                                              Pageable pageable,
                                                              PagedResourcesAssembler<OwnerSummaryDto> pagedResourcesAssembler) {
 
-        Page<OwnerSummaryDto> page = service.findOwnerSummaryDtosByLastNameStartingWith(lastName, pageable);
+        Page<OwnerSummaryDto> page = service.findOwnersByCriteria(criteria, pageable);
 
         ResourceAssembler<OwnerSummaryDto, Resource<OwnerSummaryDto>> resourceAssembler = owner ->
                 new Resource<>(owner,
                         linkTo(methodOn(OwnerController.class).findById(owner.getId())).withRel("owner"));
 
         Link selfLink = linkTo(methodOn(OwnerController.class)
-                .findByLastName(lastName, pageable, pagedResourcesAssembler))
+                .findByCriteria(criteria, pageable, pagedResourcesAssembler))
                 .withSelfRel();
 
         return pagedResourcesAssembler.toResource(page, resourceAssembler, selfLink);

@@ -2,6 +2,7 @@ package org.adrian.mypetclinic.service;
 
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
+import org.adrian.mypetclinic.predicate.OwnerSearchPredicates;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
 import org.adrian.mypetclinic.transform.OwnerTransformers;
 import org.springframework.data.domain.Page;
@@ -21,11 +22,11 @@ public class ViewAdapterService {
         this.petTypeRepository = petTypeRepository;
     }
 
-    public Page<OwnerSummaryDto> findOwnerSummaryDtosByLastNameStartingWith(
-            String lastName, Pageable pageable) {
+    public Page<OwnerSummaryDto> findOwnersByCriteria(
+            OwnerSearchCriteria criteria, Pageable pageable) {
 
-        return ownerService.findByLastNameStartingWith(
-                lastName,
+        return ownerService.findOwners(
+                OwnerSearchPredicates.lastName(criteria),
                 OwnerTransformers.toSummaryDto(),
                 pageable);
     }
