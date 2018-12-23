@@ -14,6 +14,5 @@ public class OwnerDetailDto extends PersonDto {
     private String telephone;
 
     private List<PetDto> pets;
-    private List<PetTypeDto> petTypes;
 
 }

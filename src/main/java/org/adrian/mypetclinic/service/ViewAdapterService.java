@@ -3,7 +3,6 @@ package org.adrian.mypetclinic.service;
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.predicate.OwnerSearchPredicates;
-import org.adrian.mypetclinic.repo.PetTypeRepository;
 import org.adrian.mypetclinic.transform.OwnerTransformers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,11 +14,9 @@ import java.util.Optional;
 public class ViewAdapterService {
 
     private final OwnerService ownerService;
-    private final PetTypeRepository petTypeRepository;
 
-    public ViewAdapterService(OwnerService ownerService, PetTypeRepository petTypeRepository) {
+    public ViewAdapterService(OwnerService ownerService) {
         this.ownerService = ownerService;
-        this.petTypeRepository = petTypeRepository;
     }
 
     public Page<OwnerSummaryDto> findOwnersByCriteria(
@@ -32,7 +29,7 @@ public class ViewAdapterService {
     }
 
     public Optional<OwnerDetailDto> findOwnerDetailDtoById(Long id) {
-        return ownerService.findById(id, OwnerTransformers.toDetailDto(petTypeRepository));
+        return ownerService.findById(id, OwnerTransformers.toDetailDto());
     }
 
 }
