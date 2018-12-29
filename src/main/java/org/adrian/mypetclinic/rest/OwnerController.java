@@ -16,6 +16,7 @@
 package org.adrian.mypetclinic.rest;
 
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
+import org.adrian.mypetclinic.dto.OwnerEditDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.service.OwnerSearchCriteria;
 import org.adrian.mypetclinic.service.ViewAdapterService;
@@ -23,10 +24,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -48,9 +49,9 @@ class OwnerController {
         this.service = service;
     }
 
-    @GetMapping(value = "/{id}", produces = MediaTypes.HAL_JSON_VALUE)
-    Resource<OwnerDetailDto> findById(@PathVariable("id") Long id) {
-        OwnerDetailDto owner = service.findOwnerDetailDtoById(id).get();
+    @GetMapping(value = "/{ownerId}", produces = MediaTypes.HAL_JSON_VALUE)
+    Resource<OwnerDetailDto> findById(@PathVariable("ownerId") Long ownerId) {
+        OwnerDetailDto owner = service.findOwnerDetailDtoById(ownerId).get();
         Link link = linkTo(
                 methodOn(OwnerController.class)
                         .findById(owner.getId()))
@@ -76,5 +77,19 @@ class OwnerController {
         return pagedResourcesAssembler.toResource(page, resourceAssembler, selfLink);
 
     }
+
+    @PostMapping("/{ownerId}")
+    ResponseEntity<Void> updateOwner(@Valid @RequestBody OwnerEditDto owner, @PathVariable("ownerId") Long ownerId) {
+        owner.setId(ownerId);
+        this.service.updateOwner(owner);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping
+    ResponseEntity<Void> createOwner(@Valid @RequestBody OwnerEditDto owner) {
+        this.service.createOwner(owner);
+        return ResponseEntity.created(linkTo(OwnerController.class).slash(owner).toUri()).build();
+    }
+
 
 }

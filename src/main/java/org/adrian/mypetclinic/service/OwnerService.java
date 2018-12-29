@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @Service
@@ -41,5 +42,15 @@ public class OwnerService {
         return findById(id, Function.identity());
     }
 
+    @Transactional
+    public <T> void updateOwner(T t, Long id, BiConsumer<T, Owner> biConsumer) {
+        Owner owner = this.repository.findById(id).get();
+        biConsumer.accept(t, owner);
+    }
+
+    @Transactional
+    public <T> Long createOwner(T t, Function<T, Owner> transformer) {
+        return this.repository.save(transformer.apply(t)).getId();
+    }
 
 }
