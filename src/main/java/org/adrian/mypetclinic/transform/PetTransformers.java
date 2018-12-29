@@ -5,6 +5,7 @@ import org.adrian.mypetclinic.domain.PetType;
 import org.adrian.mypetclinic.domain.Visit;
 import org.adrian.mypetclinic.dto.PetDto;
 import org.adrian.mypetclinic.dto.VisitDto;
+import org.adrian.mypetclinic.repo.PetTypeRepository;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -25,6 +26,14 @@ public class PetTransformers {
             dto.setVisits(VisitTransformers.toDto().apply(
                     pet.getVisits(),
                     Comparator.comparing(VisitDto::getDate).reversed()));
+        });
+    }
+
+    public static GenericTransformer<PetDto, Pet> toEntity(PetTypeRepository petTypeRepository) {
+        return new GenericTransformer<>(Pet::new, (dto, pet) -> {
+            pet.setName(dto.getName());
+            pet.setBirthDate(dto.getBirthDate());
+            pet.setType(petTypeRepository.findByName(dto.getType()).get());
         });
     }
 

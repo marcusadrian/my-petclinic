@@ -18,6 +18,7 @@ package org.adrian.mypetclinic.rest;
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerEditDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
+import org.adrian.mypetclinic.dto.PetDto;
 import org.adrian.mypetclinic.service.OwnerSearchCriteria;
 import org.adrian.mypetclinic.service.ViewAdapterService;
 import org.springframework.data.domain.Page;
@@ -91,5 +92,10 @@ class OwnerController {
         return ResponseEntity.created(linkTo(OwnerController.class).slash(owner).toUri()).build();
     }
 
+    @PutMapping("/{ownerId}/pets")
+    ResponseEntity<Void> addPet(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody PetDto pet) {
+        this.service.addPet(ownerId, pet);
+        return ResponseEntity.noContent().build();
+    }
 
 }

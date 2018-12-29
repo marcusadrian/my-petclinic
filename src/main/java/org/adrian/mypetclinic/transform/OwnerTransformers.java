@@ -5,11 +5,10 @@ import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerEditDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.dto.PetDto;
-import org.adrian.mypetclinic.repo.OwnerRepository;
+import org.adrian.mypetclinic.repo.PetTypeRepository;
 
 import java.util.Comparator;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 public class OwnerTransformers {
 
@@ -38,7 +37,7 @@ public class OwnerTransformers {
         });
     }
 
-    public static BiConsumer<OwnerEditDto, Owner> ownerTransformedByEditDto() {
+    public static BiConsumer<OwnerEditDto, Owner> updateOwner() {
         return (dto, owner) -> {
             owner.setId(dto.getId());
             owner.setFirstName(dto.getFirstName());
@@ -49,8 +48,14 @@ public class OwnerTransformers {
         };
     }
 
+    public static BiConsumer<PetDto, Owner> addPet(PetTypeRepository petTypeRepository) {
+        return (pet, owner) ->
+                owner.addPet(PetTransformers.toEntity(petTypeRepository).apply(pet));
+
+    }
+
     public static GenericTransformer<OwnerEditDto, Owner> toOwner() {
-        return new GenericTransformer<>(Owner::new, ownerTransformedByEditDto());
+        return new GenericTransformer<>(Owner::new, updateOwner());
     }
 
 }

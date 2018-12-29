@@ -43,7 +43,7 @@ public class OwnerService {
     }
 
     @Transactional
-    public <T> void updateOwner(T t, Long id, BiConsumer<T, Owner> biConsumer) {
+    public <T> void updateOwner(Long id, T t, BiConsumer<T, Owner> biConsumer) {
         Owner owner = this.repository.findById(id).get();
         biConsumer.accept(t, owner);
     }
