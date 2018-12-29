@@ -1,12 +1,14 @@
 package org.adrian.mypetclinic.transform;
 
 import org.adrian.mypetclinic.domain.Owner;
+import org.adrian.mypetclinic.domain.Pet;
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerEditDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.dto.PetDto;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Comparator;
 import java.util.function.BiConsumer;
 
@@ -39,7 +41,6 @@ public class OwnerTransformers {
 
     public static BiConsumer<OwnerEditDto, Owner> updateOwner() {
         return (dto, owner) -> {
-            owner.setId(dto.getId());
             owner.setFirstName(dto.getFirstName());
             owner.setLastName(dto.getLastName());
             owner.setAddress(dto.getAddress());
@@ -52,6 +53,17 @@ public class OwnerTransformers {
         return (pet, owner) ->
                 owner.addPet(PetTransformers.toEntity(petTypeRepository).apply(pet));
 
+    }
+
+    public static BiConsumer<PetDto, Owner> updatePet(PetTypeRepository petTypeRepository) {
+        return (petDto, owner) -> {
+            Pet pet = owner.getPets()
+                    .stream()
+                    .filter(entity -> entity.getId().equals(petDto.getId()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(String.format("no pet with id=%s", petDto.getId())));
+            PetTransformers.updatePet(petTypeRepository).accept(petDto, pet);
+        };
     }
 
     public static GenericTransformer<OwnerEditDto, Owner> toOwner() {

@@ -1,8 +1,10 @@
 package org.adrian.mypetclinic.transform;
 
+import org.adrian.mypetclinic.domain.Owner;
 import org.adrian.mypetclinic.domain.Pet;
 import org.adrian.mypetclinic.domain.PetType;
 import org.adrian.mypetclinic.domain.Visit;
+import org.adrian.mypetclinic.dto.OwnerEditDto;
 import org.adrian.mypetclinic.dto.PetDto;
 import org.adrian.mypetclinic.dto.VisitDto;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
@@ -10,6 +12,7 @@ import org.adrian.mypetclinic.repo.PetTypeRepository;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class PetTransformers {
@@ -30,12 +33,17 @@ public class PetTransformers {
     }
 
     public static GenericTransformer<PetDto, Pet> toEntity(PetTypeRepository petTypeRepository) {
-        return new GenericTransformer<>(Pet::new, (dto, pet) -> {
+        return new GenericTransformer<>(Pet::new, updatePet(petTypeRepository));
+    }
+
+    public static BiConsumer<PetDto, Pet> updatePet(PetTypeRepository petTypeRepository) {
+        return (dto, pet) -> {
             pet.setName(dto.getName());
             pet.setBirthDate(dto.getBirthDate());
             pet.setType(petTypeRepository.findByName(dto.getType()).get());
-        });
+        };
     }
+
 
     public static String toCommaSeparatedString(Collection<Pet> pets) {
         return pets.stream()

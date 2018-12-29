@@ -45,6 +45,10 @@ public class ViewAdapterService {
         this.ownerService.updateOwner(ownerId, pet, OwnerTransformers.addPet(this.petTypeRepository));
     }
 
+    public void updatePet(Long ownerId, PetDto pet) {
+        this.ownerService.updateOwner(ownerId, pet, OwnerTransformers.updatePet(this.petTypeRepository));
+    }
+
     public void createOwner(OwnerEditDto owner) {
         this.ownerService.createOwner(owner, OwnerTransformers.toOwner());
     }
