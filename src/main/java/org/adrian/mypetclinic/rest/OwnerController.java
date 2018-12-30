@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.net.URI;
+
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -87,9 +89,10 @@ class OwnerController {
     }
 
     @PutMapping
-    ResponseEntity<Void> createOwner(@Valid @RequestBody OwnerEditDto owner) {
-        this.service.createOwner(owner);
-        return ResponseEntity.created(linkTo(OwnerController.class).slash(owner).toUri()).build();
+    ResponseEntity<OwnerDetailDto> createOwner(@Valid @RequestBody OwnerEditDto owner) {
+        OwnerDetailDto createdOwner = this.service.createOwner(owner);
+        URI location = linkTo(OwnerController.class).slash(createdOwner).toUri();
+        return ResponseEntity.created(location).body(createdOwner);
     }
 
     @PutMapping("/{ownerId}/pets")
