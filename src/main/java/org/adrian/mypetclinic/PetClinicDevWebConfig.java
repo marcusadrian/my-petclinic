@@ -16,7 +16,7 @@ public class PetClinicDevWebConfig extends PetClinicWebConfig {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
+        registry.addMapping("/**").allowedMethods("*");
     }
 
 }
