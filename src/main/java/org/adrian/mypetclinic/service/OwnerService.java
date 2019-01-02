@@ -67,7 +67,7 @@ public class OwnerService {
     @Transactional(readOnly = true)
     public <T> T newPet(Long ownerId, Function<Pet, T> transformer) {
         Pet pet = new Pet();
-        pet.setOwner(findById(ownerId).orElse(null));
+        pet.setOwner(findById(ownerId).get());
         return transformer.apply(pet);
     }
 
