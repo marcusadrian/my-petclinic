@@ -1,11 +1,9 @@
 package org.adrian.mypetclinic.transform;
 
-import org.adrian.mypetclinic.domain.Owner;
 import org.adrian.mypetclinic.domain.Pet;
 import org.adrian.mypetclinic.domain.PetType;
-import org.adrian.mypetclinic.domain.Visit;
-import org.adrian.mypetclinic.dto.OwnerEditDto;
 import org.adrian.mypetclinic.dto.PetDto;
+import org.adrian.mypetclinic.dto.PetEditDto;
 import org.adrian.mypetclinic.dto.VisitDto;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
 
@@ -29,6 +27,16 @@ public class PetTransformers {
             dto.setVisits(VisitTransformers.toDto().apply(
                     pet.getVisits(),
                     Comparator.comparing(VisitDto::getDate).reversed()));
+        });
+    }
+
+    public static GenericTransformer<Pet, PetEditDto> toEditDto(PetTypeRepository petTypeRepository) {
+        return new GenericTransformer<>(PetEditDto::new, (pet, dto) -> {
+            dto.setId(pet.getId());
+            dto.setName(pet.getName());
+            dto.setBirthDate(pet.getBirthDate());
+            dto.setType(pet.getType());
+            dto.setPetTypes(PetTypeTransformers.toDto().apply(petTypeRepository.findAll()));
         });
     }
 

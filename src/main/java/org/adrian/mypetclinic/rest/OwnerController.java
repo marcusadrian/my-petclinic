@@ -15,10 +15,7 @@
  */
 package org.adrian.mypetclinic.rest;
 
-import org.adrian.mypetclinic.dto.OwnerDetailDto;
-import org.adrian.mypetclinic.dto.OwnerEditDto;
-import org.adrian.mypetclinic.dto.OwnerSummaryDto;
-import org.adrian.mypetclinic.dto.PetDto;
+import org.adrian.mypetclinic.dto.*;
 import org.adrian.mypetclinic.service.OwnerSearchCriteria;
 import org.adrian.mypetclinic.service.ViewAdapterService;
 import org.springframework.data.domain.Page;
@@ -29,7 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.net.URI;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -93,6 +89,16 @@ class OwnerController {
         OwnerDetailDto createdOwner = this.service.createOwner(owner);
         URI location = linkTo(OwnerController.class).slash(createdOwner).toUri();
         return ResponseEntity.created(location).body(createdOwner);
+    }
+
+    @GetMapping("/{ownerId}/pets/new")
+    ResponseEntity<PetEditDto> getPetEditDto(@PathVariable("ownerId") Long ownerId) {
+        return ResponseEntity.ok(this.service.newPetEditDto(ownerId));
+    }
+
+    @GetMapping("/{ownerId}/pets/{petId}")
+    ResponseEntity<PetEditDto> getPetEditDto(@PathVariable("ownerId") Long ownerId, @PathVariable("petId") Long petId) {
+        return ResponseEntity.ok(this.service.findPetEditDto(ownerId, petId).get());
     }
 
     @PutMapping("/{ownerId}/pets")
