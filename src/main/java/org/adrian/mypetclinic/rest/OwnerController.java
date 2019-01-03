@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -102,8 +103,17 @@ class OwnerController {
     }
 
     @PutMapping("/{ownerId}/pets")
-    ResponseEntity<Void> addPet(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody PetDto pet) {
+    ResponseEntity<Void> addPet(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody PetEditDto pet) {
         this.service.addPet(ownerId, pet);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{ownerId}/pets/{petId}")
+    ResponseEntity<Void> updatePet(@PathVariable("ownerId") Long ownerId,
+                                   @PathVariable("petId") Long petId,
+                                   @Valid @RequestBody PetEditDto pet) {
+        Assert.isTrue(pet.getId().equals(petId),"Pet id in path differs from pet id in payload.");
+        this.service.updatePet(ownerId, pet);
         return ResponseEntity.noContent().build();
     }
 

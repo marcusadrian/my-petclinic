@@ -40,15 +40,15 @@ public class PetTransformers {
         });
     }
 
-    public static GenericTransformer<PetDto, Pet> toEntity(PetTypeRepository petTypeRepository) {
+    public static GenericTransformer<PetEditDto, Pet> toEntity(PetTypeRepository petTypeRepository) {
         return new GenericTransformer<>(Pet::new, updatePet(petTypeRepository));
     }
 
-    public static BiConsumer<PetDto, Pet> updatePet(PetTypeRepository petTypeRepository) {
+    public static BiConsumer<PetEditDto, Pet> updatePet(PetTypeRepository petTypeRepository) {
         return (dto, pet) -> {
             pet.setName(dto.getName());
             pet.setBirthDate(dto.getBirthDate());
-            pet.setType(petTypeRepository.findByName(dto.getType()).get());
+            pet.setType(petTypeRepository.findById(dto.getType().getId()).get());
         };
     }
 

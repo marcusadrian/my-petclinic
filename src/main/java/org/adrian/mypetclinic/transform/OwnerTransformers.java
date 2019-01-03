@@ -2,13 +2,9 @@ package org.adrian.mypetclinic.transform;
 
 import org.adrian.mypetclinic.domain.Owner;
 import org.adrian.mypetclinic.domain.Pet;
-import org.adrian.mypetclinic.dto.OwnerDetailDto;
-import org.adrian.mypetclinic.dto.OwnerEditDto;
-import org.adrian.mypetclinic.dto.OwnerSummaryDto;
-import org.adrian.mypetclinic.dto.PetDto;
+import org.adrian.mypetclinic.dto.*;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Comparator;
 import java.util.function.BiConsumer;
 
@@ -49,13 +45,13 @@ public class OwnerTransformers {
         };
     }
 
-    public static BiConsumer<PetDto, Owner> addPet(PetTypeRepository petTypeRepository) {
+    public static BiConsumer<PetEditDto, Owner> addPet(PetTypeRepository petTypeRepository) {
         return (pet, owner) ->
                 owner.addPet(PetTransformers.toEntity(petTypeRepository).apply(pet));
 
     }
 
-    public static BiConsumer<PetDto, Owner> updatePet(PetTypeRepository petTypeRepository) {
+    public static BiConsumer<PetEditDto, Owner> updatePet(PetTypeRepository petTypeRepository) {
         return (petDto, owner) -> {
             Pet pet = owner.getPets()
                     .stream()

@@ -1,6 +1,9 @@
 package org.adrian.mypetclinic.service;
 
-import org.adrian.mypetclinic.dto.*;
+import org.adrian.mypetclinic.dto.OwnerDetailDto;
+import org.adrian.mypetclinic.dto.OwnerEditDto;
+import org.adrian.mypetclinic.dto.OwnerSummaryDto;
+import org.adrian.mypetclinic.dto.PetEditDto;
 import org.adrian.mypetclinic.predicate.OwnerSearchPredicates;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
 import org.adrian.mypetclinic.transform.OwnerTransformers;
@@ -39,11 +42,11 @@ public class ViewAdapterService {
         this.ownerService.updateOwner(owner.getId(), owner, OwnerTransformers.updateOwner());
     }
 
-    public void addPet(Long ownerId, PetDto pet) {
+    public void addPet(Long ownerId, PetEditDto pet) {
         this.ownerService.updateOwner(ownerId, pet, OwnerTransformers.addPet(this.petTypeRepository));
     }
 
-    public void updatePet(Long ownerId, PetDto pet) {
+    public void updatePet(Long ownerId, PetEditDto pet) {
         this.ownerService.updateOwner(ownerId, pet, OwnerTransformers.updatePet(this.petTypeRepository));
     }
 
