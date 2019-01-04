@@ -15,7 +15,7 @@ import javax.validation.Valid;
  * @author Marcus Adrian
  */
 @RestController
-@RequestMapping("/owners/{ownerId}")
+@RequestMapping("/owners/{ownerId}/pets")
 class PetController {
     private final ViewAdapterService service;
 
@@ -23,23 +23,23 @@ class PetController {
         this.service = service;
     }
 
-    @GetMapping("/pets/new")
+    @GetMapping("/new")
     ResponseEntity<PetEditDto> getPetEditDto(@PathVariable("ownerId") Long ownerId) {
         return ResponseEntity.ok(this.service.newPetEditDto(ownerId));
     }
 
-    @GetMapping("/pets/{petId}")
+    @GetMapping("/{petId}")
     ResponseEntity<PetEditDto> getPetEditDto(@PathVariable("ownerId") Long ownerId, @PathVariable("petId") Long petId) {
         return ResponseEntity.ok(this.service.findPetEditDto(ownerId, petId).get());
     }
 
-    @PutMapping("/pets")
+    @PutMapping
     ResponseEntity<Void> addPet(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody PetEditDto pet) {
         this.service.addPet(ownerId, pet);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/pets/{petId}")
+    @PostMapping("/{petId}")
     ResponseEntity<Void> updatePet(@PathVariable("ownerId") Long ownerId,
                                    @PathVariable("petId") Long petId,
                                    @Valid @RequestBody PetEditDto pet) {
