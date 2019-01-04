@@ -48,7 +48,6 @@ public class OwnerTransformers {
     public static BiConsumer<PetEditDto, Owner> addPet(PetTypeRepository petTypeRepository) {
         return (pet, owner) ->
                 owner.addPet(PetTransformers.toEntity(petTypeRepository).apply(pet));
-
     }
 
     public static BiConsumer<PetEditDto, Owner> updatePet(PetTypeRepository petTypeRepository) {

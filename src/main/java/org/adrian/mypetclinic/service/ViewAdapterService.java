@@ -48,16 +48,20 @@ public class ViewAdapterService {
         this.ownerService.updateOwner(ownerId, pet, OwnerTransformers.updatePet(this.petTypeRepository));
     }
 
+    public void addVisit(Long ownerId, VisitEditDto visit) {
+        this.ownerService.updateOwner(ownerId, visit, VisitTransformers.addVisit());
+    }
+
     public Optional<PetEditDto> findPetEditDto(Long ownerId, Long petId) {
         return this.ownerService.findPet(ownerId, petId, PetTransformers.toEditDto(this.petTypeRepository));
     }
 
-    public Optional<VisitEditDto> findVisitEditDto(Long ownerId, Long petId) {
-        return this.ownerService.findPet(ownerId, petId, VisitTransformers.toEditDto());
-    }
-
     public PetEditDto newPetEditDto(Long ownerId) {
         return this.ownerService.newPet(ownerId, PetTransformers.toEditDto(this.petTypeRepository));
+    }
+
+    public VisitEditDto newVisitEditDto(Long ownerId, Long petId) {
+        return this.ownerService.newVisit(ownerId, petId, VisitTransformers.toEditDto());
     }
 
     public OwnerDetailDto createOwner(OwnerEditDto owner) {

@@ -3,6 +3,7 @@ package org.adrian.mypetclinic.service;
 import com.querydsl.core.types.Predicate;
 import org.adrian.mypetclinic.domain.Owner;
 import org.adrian.mypetclinic.domain.Pet;
+import org.adrian.mypetclinic.domain.Visit;
 import org.adrian.mypetclinic.repo.OwnerRepository;
 import org.adrian.mypetclinic.transform.GeneralTransformers;
 import org.springframework.data.domain.Page;
@@ -65,10 +66,22 @@ public class OwnerService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<Pet> findPet(Long ownerId, Long petId) {
+        return this.findPet(ownerId, petId, Function.identity());
+    }
+
+    @Transactional(readOnly = true)
     public <T> T newPet(Long ownerId, Function<Pet, T> transformer) {
         Pet pet = new Pet();
         pet.setOwner(findById(ownerId).get());
         return transformer.apply(pet);
+    }
+
+    @Transactional(readOnly = true)
+    public <T> T newVisit(Long ownerId, Long petId, Function<Visit, T> transformer) {
+        Visit visit = new Visit();
+        visit.setPet(findPet(ownerId, petId).get());
+        return transformer.apply(visit);
     }
 
 }

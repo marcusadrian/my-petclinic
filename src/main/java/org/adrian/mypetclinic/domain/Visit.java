@@ -51,11 +51,4 @@ public class Visit extends BaseEntity {
     @ManyToOne
     private Pet pet;
 
-    /**
-     * Creates a new instance of Visit for the current date
-     */
-    public Visit() {
-        this.date = LocalDate.now();
-    }
-
 }

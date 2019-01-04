@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -55,7 +56,7 @@ public class Pet extends NamedEntity {
     private Owner owner;
 
     @Getter
-    @OneToMany(mappedBy = "pet")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pet")
     private Set<Visit> visits = new HashSet<>();
 
     public void addVisit(Visit visit) {
