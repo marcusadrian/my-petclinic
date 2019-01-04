@@ -1,13 +1,11 @@
 package org.adrian.mypetclinic.service;
 
-import org.adrian.mypetclinic.dto.OwnerDetailDto;
-import org.adrian.mypetclinic.dto.OwnerEditDto;
-import org.adrian.mypetclinic.dto.OwnerSummaryDto;
-import org.adrian.mypetclinic.dto.PetEditDto;
+import org.adrian.mypetclinic.dto.*;
 import org.adrian.mypetclinic.predicate.OwnerSearchPredicates;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
 import org.adrian.mypetclinic.transform.OwnerTransformers;
 import org.adrian.mypetclinic.transform.PetTransformers;
+import org.adrian.mypetclinic.transform.VisitTransformers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -52,6 +50,10 @@ public class ViewAdapterService {
 
     public Optional<PetEditDto> findPetEditDto(Long ownerId, Long petId) {
         return this.ownerService.findPet(ownerId, petId, PetTransformers.toEditDto(this.petTypeRepository));
+    }
+
+    public Optional<VisitEditDto> findVisitEditDto(Long ownerId, Long petId) {
+        return this.ownerService.findPet(ownerId, petId, VisitTransformers.toEditDto());
     }
 
     public PetEditDto newPetEditDto(Long ownerId) {
