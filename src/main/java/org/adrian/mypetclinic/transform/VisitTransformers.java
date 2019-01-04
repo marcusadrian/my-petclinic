@@ -36,14 +36,11 @@ public class VisitTransformers {
         });
     }
 
-    public static BiConsumer<VisitEditDto, Owner> addVisit() {
-        return (visit, owner) -> {
-            Pet pet = owner.getPets().stream()
-                    .filter(p -> p.getId().equals(visit.getPet().getId()))
-                    .findFirst()
-                    .get();
-            pet.addVisit(VisitTransformers.toEntity().apply(visit));
-
+    public static BiConsumer<VisitEditDto, Visit> updateVisit() {
+        return (dto, entity) -> {
+            VisitDto visit = dto.getVisit();
+            entity.setDate(visit.getDate());
+            entity.setDescription(visit.getDescription());
         };
     }
 

@@ -66,6 +66,20 @@ public class OwnerService {
     }
 
     @Transactional(readOnly = true)
+    public <T> Optional<T> findVisit(Long ownerId, Long petId, Long visitId, Function<Visit, T> transformer) {
+        return repository.findById(ownerId)
+                .flatMap(owner -> owner.getPets()
+                        .stream()
+                        .filter(pet -> pet.getId().equals(petId))
+                        .findFirst())
+                .flatMap(pet -> pet.getVisits()
+                        .stream()
+                        .filter(visit -> visit.getId().equals(visitId))
+                        .findFirst())
+                .map(transformer);
+    }
+
+    @Transactional(readOnly = true)
     public Optional<Pet> findPet(Long ownerId, Long petId) {
         return this.findPet(ownerId, petId, Function.identity());
     }

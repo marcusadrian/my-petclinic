@@ -27,17 +27,35 @@ public class VisitController {
     }
 
     @GetMapping("/new")
-    ResponseEntity<VisitEditDto> getVisitEditDto(@PathVariable("ownerId") Long ownerId, @PathVariable("petId") Long petId) {
+    ResponseEntity<VisitEditDto> getVisitEditDto(@PathVariable("ownerId") Long ownerId,
+                                                 @PathVariable("petId") Long petId) {
         return ResponseEntity.ok(this.service.newVisitEditDto(ownerId, petId));
     }
 
+    @GetMapping("/{visitId}")
+    ResponseEntity<VisitEditDto> getVisitEditDto(@PathVariable("ownerId") Long ownerId,
+                                                 @PathVariable("petId") Long petId,
+                                                 @PathVariable("visitId") Long visitId) {
+        return ResponseEntity.ok(this.service.findVisitEditDto(ownerId, petId, visitId).get());
+    }
+
     @PutMapping
-    ResponseEntity<Void> addVisit(
-            @PathVariable("ownerId") Long ownerId,
-            @PathVariable("petId") Long petId,
-            @Valid @RequestBody VisitEditDto visit) {
+    ResponseEntity<Void> addVisit(@PathVariable("ownerId") Long ownerId,
+                                  @PathVariable("petId") Long petId,
+                                  @Valid @RequestBody VisitEditDto visit) {
         Assert.isTrue(visit.getPet().getId().equals(petId), "Pet id in path differs from pet id in payload.");
         this.service.addVisit(ownerId, visit);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{visitId}")
+    ResponseEntity<Void> updateVisit(@PathVariable("ownerId") Long ownerId,
+                                     @PathVariable("petId") Long petId,
+                                     @PathVariable("visitId") Long visitId,
+                                     @Valid @RequestBody VisitEditDto visit) {
+        Assert.isTrue(visit.getPet().getId().equals(petId), "Pet id in path differs from pet id in payload.");
+        Assert.isTrue(visit.getVisit().getId().equals(visitId), "Visit id in path differs from visit id in payload.");
+        this.service.updateVisit(ownerId, visit);
         return ResponseEntity.noContent().build();
     }
 
