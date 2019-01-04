@@ -15,7 +15,9 @@
  */
 package org.adrian.mypetclinic.rest;
 
-import org.adrian.mypetclinic.dto.*;
+import org.adrian.mypetclinic.dto.OwnerDetailDto;
+import org.adrian.mypetclinic.dto.OwnerEditDto;
+import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.service.OwnerSearchCriteria;
 import org.adrian.mypetclinic.service.ViewAdapterService;
 import org.springframework.data.domain.Page;
@@ -23,7 +25,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -90,31 +91,6 @@ class OwnerController {
         OwnerDetailDto createdOwner = this.service.createOwner(owner);
         URI location = linkTo(OwnerController.class).slash(createdOwner).toUri();
         return ResponseEntity.created(location).body(createdOwner);
-    }
-
-    @GetMapping("/{ownerId}/pets/new")
-    ResponseEntity<PetEditDto> getPetEditDto(@PathVariable("ownerId") Long ownerId) {
-        return ResponseEntity.ok(this.service.newPetEditDto(ownerId));
-    }
-
-    @GetMapping("/{ownerId}/pets/{petId}")
-    ResponseEntity<PetEditDto> getPetEditDto(@PathVariable("ownerId") Long ownerId, @PathVariable("petId") Long petId) {
-        return ResponseEntity.ok(this.service.findPetEditDto(ownerId, petId).get());
-    }
-
-    @PutMapping("/{ownerId}/pets")
-    ResponseEntity<Void> addPet(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody PetEditDto pet) {
-        this.service.addPet(ownerId, pet);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{ownerId}/pets/{petId}")
-    ResponseEntity<Void> updatePet(@PathVariable("ownerId") Long ownerId,
-                                   @PathVariable("petId") Long petId,
-                                   @Valid @RequestBody PetEditDto pet) {
-        Assert.isTrue(pet.getId().equals(petId),"Pet id in path differs from pet id in payload.");
-        this.service.updatePet(ownerId, pet);
-        return ResponseEntity.noContent().build();
     }
 
 }
