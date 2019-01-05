@@ -19,6 +19,7 @@ import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerEditDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.service.OwnerSearchCriteria;
+import org.adrian.mypetclinic.service.OwnerService;
 import org.adrian.mypetclinic.service.ViewAdapterService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,15 +45,17 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RequestMapping("/owners")
 class OwnerController {
 
-    private final ViewAdapterService service;
+    private final ViewAdapterService viewService;
+    private final OwnerService ownerService;
 
-    OwnerController(ViewAdapterService service) {
-        this.service = service;
+    OwnerController(ViewAdapterService viewService, OwnerService ownerService) {
+        this.viewService = viewService;
+        this.ownerService = ownerService;
     }
 
     @GetMapping(value = "/{ownerId}", produces = MediaTypes.HAL_JSON_VALUE)
     Resource<OwnerDetailDto> findById(@PathVariable("ownerId") Long ownerId) {
-        OwnerDetailDto owner = service.findOwnerDetailDtoById(ownerId).get();
+        OwnerDetailDto owner = viewService.findOwnerDetailDtoById(ownerId).get();
         Link link = linkTo(
                 methodOn(OwnerController.class)
                         .findById(owner.getId()))
@@ -65,7 +68,7 @@ class OwnerController {
                                                              Pageable pageable,
                                                              PagedResourcesAssembler<OwnerSummaryDto> pagedResourcesAssembler) {
 
-        Page<OwnerSummaryDto> page = service.findOwnersByCriteria(criteria, pageable);
+        Page<OwnerSummaryDto> page = viewService.findOwnersByCriteria(criteria, pageable);
 
         ResourceAssembler<OwnerSummaryDto, Resource<OwnerSummaryDto>> resourceAssembler = owner ->
                 new Resource<>(owner,
@@ -82,15 +85,21 @@ class OwnerController {
     @PostMapping("/{ownerId}")
     ResponseEntity<Void> updateOwner(@Valid @RequestBody OwnerEditDto owner, @PathVariable("ownerId") Long ownerId) {
         owner.setId(ownerId);
-        this.service.updateOwner(owner);
+        this.viewService.updateOwner(owner);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping
     ResponseEntity<OwnerDetailDto> createOwner(@Valid @RequestBody OwnerEditDto owner) {
-        OwnerDetailDto createdOwner = this.service.createOwner(owner);
+        OwnerDetailDto createdOwner = this.viewService.createOwner(owner);
         URI location = linkTo(OwnerController.class).slash(createdOwner).toUri();
         return ResponseEntity.created(location).body(createdOwner);
+    }
+
+    @DeleteMapping("/{ownerId}")
+    ResponseEntity<Void> deleteOwner(@PathVariable("ownerId") Long ownerId) {
+        this.ownerService.deleteOwner(ownerId);
+        return ResponseEntity.noContent().build();
     }
 
 }

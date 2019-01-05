@@ -55,6 +55,11 @@ public class OwnerService {
         return this.repository.save(transformer.apply(t)).getId();
     }
 
+    @Transactional
+    public void deleteOwner(Long ownerId) {
+        this.repository.deleteById(ownerId);
+    }
+
     @Transactional(readOnly = true)
     public <T> Optional<T> findPet(Long ownerId, Long petId, Function<Pet, T> transformer) {
         return repository.findById(ownerId)
