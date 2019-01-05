@@ -47,4 +47,12 @@ class PetController {
         this.service.updatePet(ownerId, pet);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{petId}")
+    ResponseEntity<Void> deletePet(@PathVariable("ownerId") Long ownerId,
+                                   @PathVariable("petId") Long petId) {
+        this.service.deletePet(ownerId, petId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

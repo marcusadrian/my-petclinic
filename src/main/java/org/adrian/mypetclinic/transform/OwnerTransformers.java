@@ -51,6 +51,17 @@ public class OwnerTransformers {
                 owner.addPet(PetTransformers.toEntity(petTypeRepository).apply(pet));
     }
 
+    public static BiConsumer<Long, Owner> deletePet() {
+        return (petId, owner) -> {
+            Pet found = owner.getPets()
+                    .stream()
+                    .filter(pet -> pet.getId().equals(petId))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(String.format("no pet with id=%s", petId)));
+            owner.getPets().remove(found);
+        };
+    }
+
     public static BiConsumer<PetEditDto, Owner> updatePet(PetTypeRepository petTypeRepository) {
         return (petDto, owner) -> {
             Pet pet = owner.getPets()

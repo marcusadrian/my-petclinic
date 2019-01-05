@@ -77,4 +77,7 @@ public class ViewAdapterService {
         return this.ownerService.findById(id, OwnerTransformers.toDetailDto()).get();
     }
 
+    public void deletePet(Long ownerId, Long petId) {
+        this.ownerService.updateOwner(ownerId, petId, OwnerTransformers.deletePet());
+    }
 }
