@@ -19,6 +19,7 @@ import org.adrian.mypetclinic.domain.Pet;
 import org.adrian.mypetclinic.domain.PetType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
 
@@ -31,6 +32,6 @@ import java.util.List;
  * @author Michael Isvy
  * @author Marcus Adrian
  */
-public interface PetRepository extends JpaRepository<Pet, Long> {
+public interface PetRepository extends JpaRepository<Pet, Long>, QuerydslPredicateExecutor<Pet> {
 }
 

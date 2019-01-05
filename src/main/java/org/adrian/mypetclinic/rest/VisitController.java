@@ -59,5 +59,13 @@ public class VisitController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{visitId}")
+    ResponseEntity<Void> deleteVisit(@PathVariable("ownerId") Long ownerId,
+                                     @PathVariable("petId") Long petId,
+                                     @PathVariable("visitId") Long visitId) {
+        this.service.deleteVisit(ownerId, petId, visitId);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }
