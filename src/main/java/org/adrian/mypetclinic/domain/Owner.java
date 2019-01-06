@@ -24,8 +24,8 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Simple JavaBean domain object representing an rest.
@@ -64,20 +64,6 @@ public class Owner extends Person {
             this.pets.add(pet);
         }
         pet.setOwner(this);
-    }
-
-    /**
-     * Return the Pet with the given name, or null if none found for this Owner.
-     *
-     * @param name to test
-     * @return true if pet name is already in use
-     */
-    public Pet getPet(String name) {
-        return this.pets.stream()
-                .filter(pet -> !pet.isNew())
-                .filter(pet -> pet.getName().toLowerCase().equals(name.toLowerCase()))
-                .findFirst()
-                .orElse(null);
     }
 
     @Override
