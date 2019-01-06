@@ -1,7 +1,10 @@
 package org.adrian.mypetclinic.rest;
 
 import org.adrian.mypetclinic.dto.VisitEditDto;
-import org.adrian.mypetclinic.service.ViewAdapterService;
+import org.adrian.mypetclinic.service.PetService;
+import org.adrian.mypetclinic.service.VisitService;
+import org.adrian.mypetclinic.transform.PetTransformers;
+import org.adrian.mypetclinic.transform.VisitTransformers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
@@ -20,23 +23,26 @@ import javax.validation.Valid;
 @RequestMapping("/owners/{ownerId}/pets/{petId}/visits")
 public class VisitController {
 
-    private final ViewAdapterService service;
+    private final VisitService visitService;
+    private final PetService petService;
 
-    VisitController(ViewAdapterService service) {
-        this.service = service;
+    VisitController(VisitService visitService, PetService petService) {
+        this.visitService = visitService;
+        this.petService = petService;
     }
 
     @GetMapping("/new")
     ResponseEntity<VisitEditDto> getVisitEditDto(@PathVariable("ownerId") Long ownerId,
                                                  @PathVariable("petId") Long petId) {
-        return ResponseEntity.ok(this.service.newVisitEditDto(ownerId, petId));
+        return ResponseEntity.ok(this.visitService.newVisit(ownerId, petId, VisitTransformers.toEditDto()));
     }
 
     @GetMapping("/{visitId}")
     ResponseEntity<VisitEditDto> getVisitEditDto(@PathVariable("ownerId") Long ownerId,
                                                  @PathVariable("petId") Long petId,
                                                  @PathVariable("visitId") Long visitId) {
-        return ResponseEntity.ok(this.service.findVisitEditDto(ownerId, petId, visitId).get());
+        VisitEditDto visit = this.visitService.findVisit(ownerId, petId, visitId, VisitTransformers.toEditDto()).get();
+        return ResponseEntity.ok(visit);
     }
 
     @PutMapping
@@ -44,7 +50,7 @@ public class VisitController {
                                   @PathVariable("petId") Long petId,
                                   @Valid @RequestBody VisitEditDto visit) {
         Assert.isTrue(visit.getPet().getId().equals(petId), "Pet id in path differs from pet id in payload.");
-        this.service.addVisit(ownerId, petId, visit);
+        this.petService.updatePet(ownerId, petId, visit, PetTransformers.addVisit());
         return ResponseEntity.noContent().build();
     }
 
@@ -55,7 +61,7 @@ public class VisitController {
                                      @Valid @RequestBody VisitEditDto visit) {
         Assert.isTrue(visit.getPet().getId().equals(petId), "Pet id in path differs from pet id in payload.");
         Assert.isTrue(visit.getVisit().getId().equals(visitId), "Visit id in path differs from visit id in payload.");
-        this.service.updateVisit(ownerId, petId, visitId, visit);
+        this.visitService.updateVisit(ownerId, petId, visitId, visit, VisitTransformers.updateVisit());
         return ResponseEntity.noContent().build();
     }
 
@@ -63,7 +69,7 @@ public class VisitController {
     ResponseEntity<Void> deleteVisit(@PathVariable("ownerId") Long ownerId,
                                      @PathVariable("petId") Long petId,
                                      @PathVariable("visitId") Long visitId) {
-        this.service.deleteVisit(ownerId, petId, visitId);
+        this.visitService.deleteVisit(ownerId, petId, visitId);
         return ResponseEntity.noContent().build();
     }
 
