@@ -16,10 +16,14 @@ import java.util.Optional;
 public class ViewAdapterService {
 
     private final OwnerService ownerService;
+    private final PetService petService;
+    private final VisitService visitService;
     private final PetTypeRepository petTypeRepository;
 
-    public ViewAdapterService(OwnerService ownerService, PetTypeRepository petTypeRepository) {
+    public ViewAdapterService(OwnerService ownerService, PetService petService, VisitService visitService, PetTypeRepository petTypeRepository) {
         this.ownerService = ownerService;
+        this.petService = petService;
+        this.visitService = visitService;
         this.petTypeRepository = petTypeRepository;
     }
 
@@ -57,19 +61,19 @@ public class ViewAdapterService {
     }
 
     public Optional<PetEditDto> findPetEditDto(Long ownerId, Long petId) {
-        return this.ownerService.findPet(ownerId, petId, PetTransformers.toEditDto(this.petTypeRepository));
+        return this.petService.findPet(ownerId, petId, PetTransformers.toEditDto(this.petTypeRepository));
     }
 
     public PetEditDto newPetEditDto(Long ownerId) {
-        return this.ownerService.newPet(ownerId, PetTransformers.toEditDto(this.petTypeRepository));
+        return this.petService.newPet(ownerId, PetTransformers.toEditDto(this.petTypeRepository));
     }
 
     public Optional<VisitEditDto> findVisitEditDto(Long ownerId, Long petId, Long visitId) {
-        return this.ownerService.findVisit(ownerId, petId, visitId, VisitTransformers.toEditDto());
+        return this.visitService.findVisit(ownerId, petId, visitId, VisitTransformers.toEditDto());
     }
 
     public VisitEditDto newVisitEditDto(Long ownerId, Long petId) {
-        return this.ownerService.newVisit(ownerId, petId, VisitTransformers.toEditDto());
+        return this.visitService.newVisit(ownerId, petId, VisitTransformers.toEditDto());
     }
 
     public OwnerDetailDto createOwner(OwnerEditDto owner) {
@@ -82,6 +86,6 @@ public class ViewAdapterService {
     }
 
     public void deleteVisit(Long ownerId, Long petId, Long visitId) {
-        this.ownerService.updatePet(ownerId, petId, visitId, PetTransformers.deleteVisit());
+        this.petService.updatePet(ownerId, petId, visitId, PetTransformers.deleteVisit());
     }
 }
