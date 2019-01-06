@@ -2,7 +2,6 @@ package org.adrian.mypetclinic.transform;
 
 import org.adrian.mypetclinic.domain.Pet;
 import org.adrian.mypetclinic.domain.PetType;
-import org.adrian.mypetclinic.domain.Visit;
 import org.adrian.mypetclinic.dto.PetDto;
 import org.adrian.mypetclinic.dto.PetEditDto;
 import org.adrian.mypetclinic.dto.VisitDto;
@@ -58,23 +57,11 @@ public class PetTransformers {
         return (visit, pet) -> pet.addVisit(VisitTransformers.toEntity().apply(visit));
     }
 
-    public static BiConsumer<Long, Pet> deleteVisit() {
-        return (visitId, pet) -> {
-            Visit found = pet.getVisits()
-                    .stream()
-                    .filter(visit -> visit.getId().equals(visitId))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("no visit with id=%s", visitId)));
-            pet.getVisits().remove(found);
-        };
-    }
-
     public static String toCommaSeparatedString(Collection<Pet> pets) {
         return pets.stream()
                 .map(Pet::getName)
                 .sorted(Comparator.comparing(String::toLowerCase))
                 .collect(Collectors.joining(", "));
     }
-
 
 }

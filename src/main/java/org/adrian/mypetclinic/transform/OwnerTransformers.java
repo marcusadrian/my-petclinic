@@ -1,7 +1,6 @@
 package org.adrian.mypetclinic.transform;
 
 import org.adrian.mypetclinic.domain.Owner;
-import org.adrian.mypetclinic.domain.Pet;
 import org.adrian.mypetclinic.dto.*;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
 
@@ -48,17 +47,6 @@ public class OwnerTransformers {
     public static BiConsumer<PetEditDto, Owner> addPet(PetTypeRepository petTypeRepository) {
         return (pet, owner) ->
                 owner.addPet(PetTransformers.toEntity(petTypeRepository).apply(pet));
-    }
-
-    public static BiConsumer<Long, Owner> deletePet() {
-        return (petId, owner) -> {
-            Pet found = owner.getPets()
-                    .stream()
-                    .filter(pet -> pet.getId().equals(petId))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("no pet with id=%s", petId)));
-            owner.getPets().remove(found);
-        };
     }
 
     public static GenericTransformer<OwnerEditDto, Owner> toOwner() {

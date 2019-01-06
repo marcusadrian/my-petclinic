@@ -82,10 +82,10 @@ public class ViewAdapterService {
     }
 
     public void deletePet(Long ownerId, Long petId) {
-        this.ownerService.updateOwner(ownerId, petId, OwnerTransformers.deletePet());
+        this.petService.deletePet(ownerId, petId);
     }
 
     public void deleteVisit(Long ownerId, Long petId, Long visitId) {
-        this.petService.updatePet(ownerId, petId, visitId, PetTransformers.deleteVisit());
+        this.visitService.deleteVisit(ownerId, petId, visitId);
     }
 }

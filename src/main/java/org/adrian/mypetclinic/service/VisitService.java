@@ -52,5 +52,13 @@ public class VisitService {
         biConsumer.accept(t, visit);
     }
 
+    @Transactional
+    public void deleteVisit(Long ownerId, Long petId, Long visitId) {
+        Visit visit = findVisit(ownerId, petId, visitId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("no visit with id=%s, pet.id=%s, pet.owner.id=%s", visitId, petId, ownerId)));
+        this.repository.delete(visit);
+    }
+
 
 }

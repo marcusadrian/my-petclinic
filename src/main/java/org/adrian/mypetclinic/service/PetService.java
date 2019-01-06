@@ -49,4 +49,12 @@ public class PetService {
         return transformer.apply(pet);
     }
 
+    @Transactional
+    public void deletePet(Long ownerId, Long petId) {
+        Pet pet = findPet(ownerId, petId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("no pet with id=%s, owner.id=%s", petId, ownerId)));
+        this.repository.delete(pet);
+    }
+
 }
