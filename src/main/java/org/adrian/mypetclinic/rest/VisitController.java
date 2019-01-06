@@ -44,7 +44,7 @@ public class VisitController {
                                   @PathVariable("petId") Long petId,
                                   @Valid @RequestBody VisitEditDto visit) {
         Assert.isTrue(visit.getPet().getId().equals(petId), "Pet id in path differs from pet id in payload.");
-        this.service.addVisit(ownerId, visit);
+        this.service.addVisit(ownerId, petId, visit);
         return ResponseEntity.noContent().build();
     }
 
@@ -55,7 +55,7 @@ public class VisitController {
                                      @Valid @RequestBody VisitEditDto visit) {
         Assert.isTrue(visit.getPet().getId().equals(petId), "Pet id in path differs from pet id in payload.");
         Assert.isTrue(visit.getVisit().getId().equals(visitId), "Visit id in path differs from visit id in payload.");
-        this.service.updateVisit(ownerId, visit);
+        this.service.updateVisit(ownerId, petId, visitId, visit);
         return ResponseEntity.noContent().build();
     }
 

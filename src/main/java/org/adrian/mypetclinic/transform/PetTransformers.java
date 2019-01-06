@@ -6,6 +6,7 @@ import org.adrian.mypetclinic.domain.Visit;
 import org.adrian.mypetclinic.dto.PetDto;
 import org.adrian.mypetclinic.dto.PetEditDto;
 import org.adrian.mypetclinic.dto.VisitDto;
+import org.adrian.mypetclinic.dto.VisitEditDto;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
 
 import java.util.Collection;
@@ -51,6 +52,10 @@ public class PetTransformers {
             pet.setBirthDate(dto.getBirthDate());
             pet.setType(petTypeRepository.findById(dto.getType().getId()).get());
         };
+    }
+
+    public static BiConsumer<VisitEditDto, Pet> addVisit() {
+        return (visit, pet) -> pet.addVisit(VisitTransformers.toEntity().apply(visit));
     }
 
     public static BiConsumer<Long, Pet> deleteVisit() {

@@ -2,7 +2,6 @@ package org.adrian.mypetclinic.transform;
 
 import org.adrian.mypetclinic.domain.Owner;
 import org.adrian.mypetclinic.domain.Pet;
-import org.adrian.mypetclinic.domain.Visit;
 import org.adrian.mypetclinic.dto.*;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
 
@@ -59,42 +58,6 @@ public class OwnerTransformers {
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException(String.format("no pet with id=%s", petId)));
             owner.getPets().remove(found);
-        };
-    }
-
-    public static BiConsumer<PetEditDto, Owner> updatePet(PetTypeRepository petTypeRepository) {
-        return (petDto, owner) -> {
-            Pet pet = owner.getPets()
-                    .stream()
-                    .filter(entity -> entity.getId().equals(petDto.getId()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("no pet with id=%s", petDto.getId())));
-            PetTransformers.updatePet(petTypeRepository).accept(petDto, pet);
-        };
-    }
-
-    public static BiConsumer<VisitEditDto, Owner> addVisit() {
-        return (visit, owner) -> {
-            Pet pet = owner.getPets().stream()
-                    .filter(p -> p.getId().equals(visit.getPet().getId()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("no pet with id=%s", visit.getPet().getId())));
-            pet.addVisit(VisitTransformers.toEntity().apply(visit));
-
-        };
-    }
-
-    public static BiConsumer<VisitEditDto, Owner> updateVisit() {
-        return (visitDto, owner) -> {
-            Pet pet = owner.getPets().stream()
-                    .filter(p -> p.getId().equals(visitDto.getPet().getId()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("no pet with id=%s", visitDto.getPet().getId())));
-            Visit visit = pet.getVisits().stream()
-                    .filter(v -> v.getId().equals(visitDto.getVisit().getId()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("no visit with id=%s", visitDto.getVisit().getId())));
-            VisitTransformers.updateVisit().accept(visitDto, visit);
         };
     }
 
