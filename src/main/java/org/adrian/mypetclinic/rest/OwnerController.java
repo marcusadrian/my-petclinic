@@ -63,9 +63,9 @@ class OwnerController {
     }
 
     @GetMapping(value = "/search", produces = MediaTypes.HAL_JSON_VALUE)
-    PagedResources<Resource<OwnerSummaryDto>> findByCriteria(OwnerSearchCriteria criteria,
-                                                             Pageable pageable,
-                                                             PagedResourcesAssembler<OwnerSummaryDto> pagedResourcesAssembler) {
+    PagedResources<Resource<OwnerSummaryDto>> findOwners(OwnerSearchCriteria criteria,
+                                                         Pageable pageable,
+                                                         PagedResourcesAssembler<OwnerSummaryDto> pagedResourcesAssembler) {
 
         Page<OwnerSummaryDto> page = this.service.findOwners(
                 OwnerSearchPredicates.ownerSearch(criteria),
@@ -77,7 +77,7 @@ class OwnerController {
                         linkTo(methodOn(OwnerController.class).findById(owner.getId())).withRel("owner"));
 
         Link selfLink = linkTo(methodOn(OwnerController.class)
-                .findByCriteria(criteria, pageable, pagedResourcesAssembler))
+                .findOwners(criteria, pageable, pagedResourcesAssembler))
                 .withSelfRel();
 
         return pagedResourcesAssembler.toResource(page, resourceAssembler, selfLink);

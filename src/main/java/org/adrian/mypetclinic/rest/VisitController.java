@@ -1,9 +1,7 @@
 package org.adrian.mypetclinic.rest;
 
 import org.adrian.mypetclinic.dto.VisitEditDto;
-import org.adrian.mypetclinic.service.PetService;
 import org.adrian.mypetclinic.service.VisitService;
-import org.adrian.mypetclinic.transform.PetTransformers;
 import org.adrian.mypetclinic.transform.VisitTransformers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
@@ -24,33 +22,31 @@ import javax.validation.Valid;
 public class VisitController {
 
     private final VisitService visitService;
-    private final PetService petService;
 
-    VisitController(VisitService visitService, PetService petService) {
+    VisitController(VisitService visitService) {
         this.visitService = visitService;
-        this.petService = petService;
     }
 
     @GetMapping("/new")
-    ResponseEntity<VisitEditDto> getVisitEditDto(@PathVariable("ownerId") Long ownerId,
-                                                 @PathVariable("petId") Long petId) {
+    ResponseEntity<VisitEditDto> newVisit(@PathVariable("ownerId") Long ownerId,
+                                          @PathVariable("petId") Long petId) {
         return ResponseEntity.ok(this.visitService.newVisit(ownerId, petId, VisitTransformers.toEditDto()));
     }
 
     @GetMapping("/{visitId}")
-    ResponseEntity<VisitEditDto> getVisitEditDto(@PathVariable("ownerId") Long ownerId,
-                                                 @PathVariable("petId") Long petId,
-                                                 @PathVariable("visitId") Long visitId) {
+    ResponseEntity<VisitEditDto> findVisit(@PathVariable("ownerId") Long ownerId,
+                                           @PathVariable("petId") Long petId,
+                                           @PathVariable("visitId") Long visitId) {
         VisitEditDto visit = this.visitService.findVisit(ownerId, petId, visitId, VisitTransformers.toEditDto()).get();
         return ResponseEntity.ok(visit);
     }
 
     @PutMapping
-    ResponseEntity<Void> addVisit(@PathVariable("ownerId") Long ownerId,
-                                  @PathVariable("petId") Long petId,
-                                  @Valid @RequestBody VisitEditDto visit) {
+    ResponseEntity<Void> createVisit(@PathVariable("ownerId") Long ownerId,
+                                     @PathVariable("petId") Long petId,
+                                     @Valid @RequestBody VisitEditDto visit) {
         Assert.isTrue(visit.getPet().getId().equals(petId), "Pet id in path differs from pet id in payload.");
-        this.petService.updatePet(ownerId, petId, visit, PetTransformers.addVisit());
+        this.visitService.createVisit(ownerId, petId, visit, VisitTransformers.toEntity());
         return ResponseEntity.noContent().build();
     }
 

@@ -45,6 +45,16 @@ public class VisitService {
     }
 
     @Transactional
+    public <T> Long createVisit(Long ownerId, Long petId, T t, Function<T, Visit> transformer) {
+        Pet pet = petService.findPet(ownerId, petId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("no pet with id=%s, owner.id=%s", petId, ownerId)));
+        Visit visit = transformer.apply(t);
+        visit.setPet(pet);
+        return this.repository.save(visit).getId();
+    }
+
+    @Transactional
     public <T> void updateVisit(Long ownerId, Long petId, Long visitId, T t, BiConsumer<T, Visit> biConsumer) {
         Visit visit = findVisit(ownerId, petId, visitId)
                 .orElseThrow(() -> new IllegalArgumentException(

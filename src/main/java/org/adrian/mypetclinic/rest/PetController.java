@@ -29,12 +29,12 @@ class PetController {
     }
 
     @GetMapping("/new")
-    ResponseEntity<PetEditDto> getPetEditDto(@PathVariable("ownerId") Long ownerId) {
+    ResponseEntity<PetEditDto> newPet(@PathVariable("ownerId") Long ownerId) {
         return ResponseEntity.ok(this.service.newPet(ownerId, PetTransformers.toEditDto(this.petTypeRepository)));
     }
 
     @GetMapping("/{petId}")
-    ResponseEntity<PetEditDto> getPetEditDto(@PathVariable("ownerId") Long ownerId, @PathVariable("petId") Long petId) {
+    ResponseEntity<PetEditDto> findPet(@PathVariable("ownerId") Long ownerId, @PathVariable("petId") Long petId) {
         PetEditDto pet = this.service
                 .findPet(ownerId, petId, PetTransformers.toEditDto(this.petTypeRepository))
                 .get();
@@ -42,7 +42,7 @@ class PetController {
     }
 
     @PutMapping
-    ResponseEntity<Void> addPet(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody PetEditDto pet) {
+    ResponseEntity<Void> createPet(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody PetEditDto pet) {
         this.service.createPet(ownerId, pet, PetTransformers.toEntity(this.petTypeRepository));
         return ResponseEntity.noContent().build();
     }
