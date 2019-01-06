@@ -1,8 +1,10 @@
 package org.adrian.mypetclinic.transform;
 
 import org.adrian.mypetclinic.domain.Owner;
-import org.adrian.mypetclinic.dto.*;
-import org.adrian.mypetclinic.repo.PetTypeRepository;
+import org.adrian.mypetclinic.dto.OwnerDetailDto;
+import org.adrian.mypetclinic.dto.OwnerEditDto;
+import org.adrian.mypetclinic.dto.OwnerSummaryDto;
+import org.adrian.mypetclinic.dto.PetDto;
 
 import java.util.Comparator;
 import java.util.function.BiConsumer;
@@ -42,11 +44,6 @@ public class OwnerTransformers {
             owner.setCity(dto.getCity());
             owner.setTelephone(dto.getTelephone());
         };
-    }
-
-    public static BiConsumer<PetEditDto, Owner> addPet(PetTypeRepository petTypeRepository) {
-        return (pet, owner) ->
-                owner.addPet(PetTransformers.toEntity(petTypeRepository).apply(pet));
     }
 
     public static GenericTransformer<OwnerEditDto, Owner> toOwner() {

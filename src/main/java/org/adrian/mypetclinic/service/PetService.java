@@ -33,6 +33,15 @@ public class PetService {
     }
 
     @Transactional
+    public <T> Long createPet(Long ownerId, T t, Function<T, Pet> transformer) {
+        Owner owner = ownerService.findById(ownerId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("no owner with id=%s", ownerId)));
+        Pet pet = transformer.apply(t);
+        pet.setOwner(owner);
+        return this.repository.save(pet).getId();
+    }
+
+    @Transactional
     public <T> void updatePet(Long ownerId, Long petId, T t, BiConsumer<T, Pet> biConsumer) {
         Pet pet = findPet(ownerId, petId)
                 .orElseThrow(() -> new IllegalArgumentException(
