@@ -55,7 +55,7 @@ public class Owner extends Person {
     private String telephone;
 
     @Getter
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private Set<Pet> pets = new HashSet<>();
 
 

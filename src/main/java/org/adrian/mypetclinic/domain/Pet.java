@@ -56,7 +56,7 @@ public class Pet extends NamedEntity {
     private Owner owner;
 
     @Getter
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pet")
     private Set<Visit> visits = new HashSet<>();
 
     public void addVisit(Visit visit) {
