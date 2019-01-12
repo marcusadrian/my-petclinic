@@ -3,6 +3,7 @@ package org.adrian.mypetclinic.service;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.adrian.mypetclinic.domain.Owner;
 import org.adrian.mypetclinic.domain.Pet;
+import org.adrian.mypetclinic.exception.PetClinicBusinessException;
 import org.adrian.mypetclinic.repo.PetRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,7 +69,11 @@ public class PetService {
             predicate = predicate.and(id(petId).not());
         }
         if (this.repository.count(predicate) > 0) {
-            throw new IllegalArgumentException(String.format("Name '%s' already exists", pet.getName()));
+            throw new PetClinicBusinessException.Builder(String.format("Name '%s' already exists", pet.getName()))
+                    .invalidValue(pet.getName())
+                    .propertyPath("name")
+                    .messageTemplate("duplicate")
+                    .build();
         }
     }
 
