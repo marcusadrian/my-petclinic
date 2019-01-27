@@ -1,7 +1,5 @@
 package org.adrian.mypetclinic.transform;
 
-import org.adrian.mypetclinic.domain.Owner;
-import org.adrian.mypetclinic.domain.Pet;
 import org.adrian.mypetclinic.domain.Visit;
 import org.adrian.mypetclinic.dto.VisitDto;
 import org.adrian.mypetclinic.dto.VisitEditDto;
@@ -19,28 +17,22 @@ public class VisitTransformers {
 
     public static GenericTransformer<Visit, VisitEditDto> toEditDto() {
         return new GenericTransformer<>(VisitEditDto::new, (entity, dto) -> {
-            Pet pet = entity.getPet();
-            dto.setPet(PetTransformers.toDto().apply(pet));
-            Owner owner = entity.getPet().getOwner();
-            dto.setOwnerName(String.format("%s %s", owner.getFirstName(), owner.getLastName()));
-            dto.setVisit(toDto().apply(entity));
+            dto.setDate(entity.getDate());
+            dto.setDescription(entity.getDescription());
         });
     }
 
     public static GenericTransformer<VisitEditDto, Visit> toEntity() {
         return new GenericTransformer<>(Visit::new, (dto, entity) -> {
-            VisitDto visit = dto.getVisit();
-            entity.setId(visit.getId());
-            entity.setDate(visit.getDate());
-            entity.setDescription(visit.getDescription());
+            entity.setDate(dto.getDate());
+            entity.setDescription(dto.getDescription());
         });
     }
 
     public static BiConsumer<VisitEditDto, Visit> updateVisit() {
         return (dto, entity) -> {
-            VisitDto visit = dto.getVisit();
-            entity.setDate(visit.getDate());
-            entity.setDescription(visit.getDescription());
+            entity.setDate(dto.getDate());
+            entity.setDescription(dto.getDescription());
         };
     }
 
