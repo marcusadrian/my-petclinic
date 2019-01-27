@@ -1,6 +1,5 @@
 package org.adrian.mypetclinic.rest;
 
-import org.adrian.mypetclinic.dto.VisitDto;
 import org.adrian.mypetclinic.dto.VisitEditDto;
 import org.adrian.mypetclinic.service.VisitService;
 import org.adrian.mypetclinic.transform.VisitTransformers;
@@ -35,10 +34,10 @@ public class VisitController {
     }
 
     @GetMapping("/{visitId}")
-    ResponseEntity<VisitDto> findVisit(@PathVariable("ownerId") Long ownerId,
-                                       @PathVariable("petId") Long petId,
-                                       @PathVariable("visitId") Long visitId) {
-        VisitDto visit = this.visitService.findVisit(ownerId, petId, visitId, VisitTransformers.toDto()).get();
+    ResponseEntity<VisitEditDto> findVisit(@PathVariable("ownerId") Long ownerId,
+                                           @PathVariable("petId") Long petId,
+                                           @PathVariable("visitId") Long visitId) {
+        VisitEditDto visit = this.visitService.findVisit(ownerId, petId, visitId, VisitTransformers.toEditDto()).get();
         return ResponseEntity.ok(visit);
     }
 
