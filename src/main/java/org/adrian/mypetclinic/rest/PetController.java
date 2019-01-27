@@ -29,12 +29,12 @@ class PetController {
     }
 
     @GetMapping("/new")
-    ResponseEntity<PetEditDto> newPet(@PathVariable("ownerId") Long ownerId) {
+    ResponseEntity<PetEditDto> prepareNew(@PathVariable("ownerId") Long ownerId) {
         return ResponseEntity.ok(this.service.newPet(ownerId, PetTransformers.toEditDto(this.petTypeRepository)));
     }
 
-    @GetMapping("/{petId}")
-    ResponseEntity<PetEditDto> findPet(@PathVariable("ownerId") Long ownerId, @PathVariable("petId") Long petId) {
+    @GetMapping("/{petId}/edit")
+    ResponseEntity<PetEditDto> prepareEdit(@PathVariable("ownerId") Long ownerId, @PathVariable("petId") Long petId) {
         PetEditDto pet = this.service
                 .findPet(ownerId, petId, PetTransformers.toEditDto(this.petTypeRepository))
                 .get();
@@ -42,15 +42,15 @@ class PetController {
     }
 
     @PutMapping
-    ResponseEntity<Void> createPet(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody PetEditDto pet) {
+    ResponseEntity<Void> create(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody PetEditDto pet) {
         this.service.createPet(ownerId, pet, PetTransformers.toEntity(this.petTypeRepository));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/{petId}")
-    ResponseEntity<Void> updatePet(@PathVariable("ownerId") Long ownerId,
-                                   @PathVariable("petId") Long petId,
-                                   @Valid @RequestBody PetEditDto pet) {
+    ResponseEntity<Void> update(@PathVariable("ownerId") Long ownerId,
+                                @PathVariable("petId") Long petId,
+                                @Valid @RequestBody PetEditDto pet) {
         this.service.updatePet(ownerId, petId, pet, PetTransformers.updatePet(this.petTypeRepository));
         return ResponseEntity.noContent().build();
     }

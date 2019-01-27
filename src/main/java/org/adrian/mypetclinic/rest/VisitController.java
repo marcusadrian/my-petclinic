@@ -28,42 +28,42 @@ public class VisitController {
     }
 
     @GetMapping("/new")
-    ResponseEntity<VisitEditDto> newVisit(@PathVariable("ownerId") Long ownerId,
-                                          @PathVariable("petId") Long petId) {
+    ResponseEntity<VisitEditDto> prepareNew(@PathVariable("ownerId") Long ownerId,
+                                            @PathVariable("petId") Long petId) {
         return ResponseEntity.ok(this.visitService.newVisit(ownerId, petId, VisitTransformers.toEditDto()));
     }
 
-    @GetMapping("/{visitId}")
-    ResponseEntity<VisitEditDto> findVisit(@PathVariable("ownerId") Long ownerId,
-                                           @PathVariable("petId") Long petId,
-                                           @PathVariable("visitId") Long visitId) {
+    @GetMapping("/{visitId}/edit")
+    ResponseEntity<VisitEditDto> prepareEdit(@PathVariable("ownerId") Long ownerId,
+                                             @PathVariable("petId") Long petId,
+                                             @PathVariable("visitId") Long visitId) {
         VisitEditDto visit = this.visitService.findVisit(ownerId, petId, visitId, VisitTransformers.toEditDto()).get();
         return ResponseEntity.ok(visit);
     }
 
     @PutMapping
-    ResponseEntity<Void> createVisit(@PathVariable("ownerId") Long ownerId,
-                                     @PathVariable("petId") Long petId,
-                                     @Valid @RequestBody VisitEditDto visit) {
+    ResponseEntity<Void> create(@PathVariable("ownerId") Long ownerId,
+                                @PathVariable("petId") Long petId,
+                                @Valid @RequestBody VisitEditDto visit) {
 
         this.visitService.createVisit(ownerId, petId, visit, VisitTransformers.toEntity());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/{visitId}")
-    ResponseEntity<Void> updateVisit(@PathVariable("ownerId") Long ownerId,
-                                     @PathVariable("petId") Long petId,
-                                     @PathVariable("visitId") Long visitId,
-                                     @Valid @RequestBody VisitEditDto visit) {
+    ResponseEntity<Void> update(@PathVariable("ownerId") Long ownerId,
+                                @PathVariable("petId") Long petId,
+                                @PathVariable("visitId") Long visitId,
+                                @Valid @RequestBody VisitEditDto visit) {
 
         this.visitService.updateVisit(ownerId, petId, visitId, visit, VisitTransformers.updateVisit());
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{visitId}")
-    ResponseEntity<Void> deleteVisit(@PathVariable("ownerId") Long ownerId,
-                                     @PathVariable("petId") Long petId,
-                                     @PathVariable("visitId") Long visitId) {
+    ResponseEntity<Void> delete(@PathVariable("ownerId") Long ownerId,
+                                @PathVariable("petId") Long petId,
+                                @PathVariable("visitId") Long visitId) {
         this.visitService.deleteVisit(ownerId, petId, visitId);
         return ResponseEntity.noContent().build();
     }

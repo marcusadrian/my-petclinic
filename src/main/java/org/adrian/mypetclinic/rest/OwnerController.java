@@ -49,19 +49,19 @@ class OwnerController {
     }
 
     @GetMapping(value = "/{ownerId}")
-    ResponseEntity<OwnerDetailDto> findById(@PathVariable("ownerId") Long ownerId) {
+    ResponseEntity<OwnerDetailDto> find(@PathVariable("ownerId") Long ownerId) {
         OwnerDetailDto owner = this.service.findById(ownerId, OwnerTransformers.toDetailDto()).get();
         return ResponseEntity.ok(owner);
     }
 
     @GetMapping(value = "/{ownerId}/edit")
-    ResponseEntity<OwnerEditDto> initEdit(@PathVariable("ownerId") Long ownerId) {
+    ResponseEntity<OwnerEditDto> prepareEdit(@PathVariable("ownerId") Long ownerId) {
         OwnerEditDto owner = this.service.findById(ownerId, OwnerTransformers.toEditDto()).get();
         return ResponseEntity.ok(owner);
     }
 
     @GetMapping(value = "/search")
-    ResponseEntity<Page<OwnerSummaryDto>> findOwners(OwnerSearchCriteria criteria, Pageable pageable) {
+    ResponseEntity<Page<OwnerSummaryDto>> search(OwnerSearchCriteria criteria, Pageable pageable) {
 
         Page<OwnerSummaryDto> page = this.service.findOwners(
                 OwnerSearchPredicates.ownerSearch(criteria),
@@ -72,13 +72,13 @@ class OwnerController {
     }
 
     @PostMapping("/{ownerId}")
-    ResponseEntity<Void> updateOwner(@Valid @RequestBody OwnerEditDto owner, @PathVariable("ownerId") Long ownerId) {
+    ResponseEntity<Void> update(@Valid @RequestBody OwnerEditDto owner, @PathVariable("ownerId") Long ownerId) {
         this.service.updateOwner(ownerId, owner, OwnerTransformers.updateOwner());
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping
-    ResponseEntity<BaseDto> createOwner(@Valid @RequestBody OwnerEditDto owner) {
+    ResponseEntity<BaseDto> create(@Valid @RequestBody OwnerEditDto owner) {
         BaseDto createdOwner = this.service.createOwner(
                 owner,
                 OwnerTransformers.toOwner(),
@@ -87,7 +87,7 @@ class OwnerController {
     }
 
     @DeleteMapping("/{ownerId}")
-    ResponseEntity<Void> deleteOwner(@PathVariable("ownerId") Long ownerId) {
+    ResponseEntity<Void> delete(@PathVariable("ownerId") Long ownerId) {
         this.service.deleteOwner(ownerId);
         return ResponseEntity.noContent().build();
     }
