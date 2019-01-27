@@ -15,6 +15,7 @@
  */
 package org.adrian.mypetclinic.rest;
 
+import org.adrian.mypetclinic.dto.BaseDto;
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerEditDto;
 import org.adrian.mypetclinic.dto.OwnerSummaryDto;
@@ -77,11 +78,11 @@ class OwnerController {
     }
 
     @PutMapping
-    ResponseEntity<OwnerDetailDto> createOwner(@Valid @RequestBody OwnerEditDto owner) {
-        OwnerDetailDto createdOwner = this.service.createOwner(
+    ResponseEntity<BaseDto> createOwner(@Valid @RequestBody OwnerEditDto owner) {
+        BaseDto createdOwner = this.service.createOwner(
                 owner,
                 OwnerTransformers.toOwner(),
-                OwnerTransformers.toDetailDto());
+                BaseDto::fromBaseEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOwner);
     }
 
