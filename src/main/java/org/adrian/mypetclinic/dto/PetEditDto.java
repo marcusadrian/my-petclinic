@@ -10,8 +10,10 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PetEditDto extends NamedDto {
+public class PetEditDto {
 
+    @NotNull
+    private String name;
     @NotNull
     private LocalDate birthDate;
     @NotNull

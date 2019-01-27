@@ -6,7 +6,6 @@ import org.adrian.mypetclinic.service.PetService;
 import org.adrian.mypetclinic.transform.PetTransformers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -52,8 +51,7 @@ class PetController {
     ResponseEntity<Void> updatePet(@PathVariable("ownerId") Long ownerId,
                                    @PathVariable("petId") Long petId,
                                    @Valid @RequestBody PetEditDto pet) {
-        Assert.isTrue(pet.getId().equals(petId), "Pet id in path differs from pet id in payload.");
-        this.service.updatePet(ownerId, pet.getId(), pet, PetTransformers.updatePet(this.petTypeRepository));
+        this.service.updatePet(ownerId, petId, pet, PetTransformers.updatePet(this.petTypeRepository));
         return ResponseEntity.noContent().build();
     }
 

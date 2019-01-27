@@ -32,7 +32,6 @@ public class PetTransformers {
 
     public static GenericTransformer<Pet, PetEditDto> toEditDto(PetTypeRepository petTypeRepository) {
         return new GenericTransformer<>(PetEditDto::new, (pet, dto) -> {
-            dto.setId(pet.getId());
             dto.setName(pet.getName());
             dto.setBirthDate(pet.getBirthDate());
             dto.setType(pet.getType());
