@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.core.style.ToStringCreator;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Digits;
@@ -54,7 +55,7 @@ public class Owner extends Person {
     private String telephone;
 
     @Getter
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "owner")
     private Set<Pet> pets = new HashSet<>();
 
     @Override
