@@ -36,6 +36,16 @@ public class OwnerTransformers {
         });
     }
 
+    public static GenericTransformer<Owner, OwnerEditDto> toEditDto() {
+        return new GenericTransformer<>(OwnerEditDto::new, (owner, dto) -> {
+            dto.setFirstName(owner.getFirstName());
+            dto.setLastName(owner.getLastName());
+            dto.setAddress(owner.getAddress());
+            dto.setCity(owner.getCity());
+            dto.setTelephone(owner.getTelephone());
+        });
+    }
+
     public static BiConsumer<OwnerEditDto, Owner> updateOwner() {
         return (dto, owner) -> {
             owner.setFirstName(dto.getFirstName());

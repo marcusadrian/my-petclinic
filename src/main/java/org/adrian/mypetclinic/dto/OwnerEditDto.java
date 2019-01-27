@@ -9,8 +9,12 @@ import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
-public class OwnerEditDto extends PersonDto {
+public class OwnerEditDto {
 
+    @NotBlank
+    private String firstName;
+    @NotBlank
+    private String lastName;
     @NotBlank
     private String address;
     @NotBlank

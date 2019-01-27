@@ -53,6 +53,12 @@ class OwnerController {
         return ResponseEntity.ok(owner);
     }
 
+    @GetMapping(value = "/{ownerId}/edit")
+    ResponseEntity<OwnerEditDto> initEdit(@PathVariable("ownerId") Long ownerId) {
+        OwnerEditDto owner = this.service.findById(ownerId, OwnerTransformers.toEditDto()).get();
+        return ResponseEntity.ok(owner);
+    }
+
     @GetMapping(value = "/search")
     ResponseEntity<Page<OwnerSummaryDto>> findOwners(OwnerSearchCriteria criteria, Pageable pageable) {
 
@@ -66,8 +72,7 @@ class OwnerController {
 
     @PostMapping("/{ownerId}")
     ResponseEntity<Void> updateOwner(@Valid @RequestBody OwnerEditDto owner, @PathVariable("ownerId") Long ownerId) {
-        owner.setId(ownerId);
-        this.service.updateOwner(owner.getId(), owner, OwnerTransformers.updateOwner());
+        this.service.updateOwner(ownerId, owner, OwnerTransformers.updateOwner());
         return ResponseEntity.noContent().build();
     }
 
