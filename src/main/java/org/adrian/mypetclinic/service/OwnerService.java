@@ -45,8 +45,9 @@ public class OwnerService {
     }
 
     @Transactional
-    public <T> Long createOwner(T t, Function<T, Owner> transformer) {
-        return this.repository.save(transformer.apply(t)).getId();
+    public <T, R> R createOwner(T t, Function<T, Owner> inTransformer, Function<Owner, R> outTransformer) {
+        Owner createdOwner = this.repository.save(inTransformer.apply(t));
+        return outTransformer.apply(createdOwner);
     }
 
     @Transactional

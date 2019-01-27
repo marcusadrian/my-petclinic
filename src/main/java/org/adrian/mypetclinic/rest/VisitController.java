@@ -3,6 +3,7 @@ package org.adrian.mypetclinic.rest;
 import org.adrian.mypetclinic.dto.VisitEditDto;
 import org.adrian.mypetclinic.service.VisitService;
 import org.adrian.mypetclinic.transform.VisitTransformers;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,7 @@ public class VisitController {
                                      @Valid @RequestBody VisitEditDto visit) {
         Assert.isTrue(visit.getPet().getId().equals(petId), "Pet id in path differs from pet id in payload.");
         this.visitService.createVisit(ownerId, petId, visit, VisitTransformers.toEntity());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/{visitId}")

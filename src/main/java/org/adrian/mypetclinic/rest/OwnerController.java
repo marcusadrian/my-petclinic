@@ -24,16 +24,11 @@ import org.adrian.mypetclinic.service.OwnerService;
 import org.adrian.mypetclinic.transform.OwnerTransformers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * @author Juergen Hoeller
@@ -52,36 +47,21 @@ class OwnerController {
         this.service = service;
     }
 
-    @GetMapping(value = "/{ownerId}", produces = MediaTypes.HAL_JSON_VALUE)
-    Resource<OwnerDetailDto> findById(@PathVariable("ownerId") Long ownerId) {
+    @GetMapping(value = "/{ownerId}")
+    ResponseEntity<OwnerDetailDto> findById(@PathVariable("ownerId") Long ownerId) {
         OwnerDetailDto owner = this.service.findById(ownerId, OwnerTransformers.toDetailDto()).get();
-        Link link = linkTo(
-                methodOn(OwnerController.class)
-                        .findById(owner.getId()))
-                .withSelfRel();
-        return new Resource<>(owner, link);
+        return ResponseEntity.ok(owner);
     }
 
-    @GetMapping(value = "/search", produces = MediaTypes.HAL_JSON_VALUE)
-    PagedResources<Resource<OwnerSummaryDto>> findOwners(OwnerSearchCriteria criteria,
-                                                         Pageable pageable,
-                                                         PagedResourcesAssembler<OwnerSummaryDto> pagedResourcesAssembler) {
+    @GetMapping(value = "/search")
+    ResponseEntity<Page<OwnerSummaryDto>> findOwners(OwnerSearchCriteria criteria, Pageable pageable) {
 
         Page<OwnerSummaryDto> page = this.service.findOwners(
                 OwnerSearchPredicates.ownerSearch(criteria),
                 OwnerTransformers.toSummaryDto(),
                 pageable);
 
-        ResourceAssembler<OwnerSummaryDto, Resource<OwnerSummaryDto>> resourceAssembler = owner ->
-                new Resource<>(owner,
-                        linkTo(methodOn(OwnerController.class).findById(owner.getId())).withRel("owner"));
-
-        Link selfLink = linkTo(methodOn(OwnerController.class)
-                .findOwners(criteria, pageable, pagedResourcesAssembler))
-                .withSelfRel();
-
-        return pagedResourcesAssembler.toResource(page, resourceAssembler, selfLink);
-
+        return ResponseEntity.ok(page);
     }
 
     @PostMapping("/{ownerId}")
@@ -93,10 +73,11 @@ class OwnerController {
 
     @PutMapping
     ResponseEntity<OwnerDetailDto> createOwner(@Valid @RequestBody OwnerEditDto owner) {
-        Long id = this.service.createOwner(owner, OwnerTransformers.toOwner());
-        OwnerDetailDto createdOwner = this.service.findById(id, OwnerTransformers.toDetailDto()).get();
-        URI location = linkTo(OwnerController.class).slash(createdOwner).toUri();
-        return ResponseEntity.created(location).body(createdOwner);
+        OwnerDetailDto createdOwner = this.service.createOwner(
+                owner,
+                OwnerTransformers.toOwner(),
+                OwnerTransformers.toDetailDto());
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdOwner);
     }
 
     @DeleteMapping("/{ownerId}")

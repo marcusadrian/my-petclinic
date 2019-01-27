@@ -4,6 +4,7 @@ import org.adrian.mypetclinic.dto.PetEditDto;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
 import org.adrian.mypetclinic.service.PetService;
 import org.adrian.mypetclinic.transform.PetTransformers;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +45,7 @@ class PetController {
     @PutMapping
     ResponseEntity<Void> createPet(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody PetEditDto pet) {
         this.service.createPet(ownerId, pet, PetTransformers.toEntity(this.petTypeRepository));
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/{petId}")
