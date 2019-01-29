@@ -36,14 +36,14 @@ public class PetService {
     }
 
     @Transactional
-    public <T> Long createPet(Long ownerId, T t, Function<T, Pet> transformer) {
+    public <T> void createPet(Long ownerId, T t, Function<T, Pet> transformer) {
         Pet pet = transformer.apply(t);
         // validate input
         validatePet(pet, ownerId, null);
         Owner owner = ownerService.findById(ownerId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("no owner with id=%s", ownerId)));
         pet.setOwner(owner);
-        return this.repository.save(pet).getId();
+        this.repository.save(pet);
     }
 
     @Transactional
