@@ -4,8 +4,6 @@ import org.adrian.mypetclinic.domain.Visit;
 import org.adrian.mypetclinic.dto.VisitDto;
 import org.adrian.mypetclinic.dto.VisitEditDto;
 
-import java.util.function.BiConsumer;
-
 public class VisitTransformers {
     public static GenericTransformer<Visit, VisitDto> toDto() {
         return new GenericTransformer<>(VisitDto::new, (visit, dto) -> {
@@ -22,18 +20,11 @@ public class VisitTransformers {
         });
     }
 
-    public static GenericTransformer<VisitEditDto, Visit> toEntity() {
+    public static GenericTransformer<VisitEditDto, Visit> toVisit() {
         return new GenericTransformer<>(Visit::new, (dto, entity) -> {
             entity.setDate(dto.getDate());
             entity.setDescription(dto.getDescription());
         });
-    }
-
-    public static BiConsumer<VisitEditDto, Visit> updateVisit() {
-        return (dto, entity) -> {
-            entity.setDate(dto.getDate());
-            entity.setDescription(dto.getDescription());
-        };
     }
 
 }

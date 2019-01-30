@@ -10,7 +10,6 @@ import org.adrian.mypetclinic.repo.PetTypeRepository;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class PetTransformers {
@@ -39,16 +38,12 @@ public class PetTransformers {
         });
     }
 
-    public static GenericTransformer<PetEditDto, Pet> toEntity(PetTypeRepository petTypeRepository) {
-        return new GenericTransformer<>(Pet::new, updatePet(petTypeRepository));
-    }
-
-    public static BiConsumer<PetEditDto, Pet> updatePet(PetTypeRepository petTypeRepository) {
-        return (dto, pet) -> {
+    public static GenericTransformer<PetEditDto, Pet> toPet(PetTypeRepository petTypeRepository) {
+        return new GenericTransformer<>(Pet::new, (dto, pet) -> {
             pet.setName(dto.getName());
             pet.setBirthDate(dto.getBirthDate());
             pet.setType(petTypeRepository.findById(dto.getType().getId()).get());
-        };
+        });
     }
 
     public static String toCommaSeparatedString(Collection<Pet> pets) {

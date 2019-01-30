@@ -43,7 +43,7 @@ class PetController {
 
     @PutMapping
     ResponseEntity<Void> create(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody PetEditDto pet) {
-        this.service.createPet(ownerId, pet, PetTransformers.toEntity(this.petTypeRepository));
+        this.service.createPet(ownerId, pet, PetTransformers.toPet(this.petTypeRepository));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -51,7 +51,7 @@ class PetController {
     ResponseEntity<Void> update(@PathVariable("ownerId") Long ownerId,
                                 @PathVariable("petId") Long petId,
                                 @Valid @RequestBody PetEditDto pet) {
-        this.service.updatePet(ownerId, petId, pet, PetTransformers.updatePet(this.petTypeRepository));
+        this.service.updatePet(ownerId, petId, pet, PetTransformers.toPet(this.petTypeRepository));
         return ResponseEntity.noContent().build();
     }
 

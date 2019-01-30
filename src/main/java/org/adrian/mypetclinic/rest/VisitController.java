@@ -46,7 +46,7 @@ public class VisitController {
                                 @PathVariable("petId") Long petId,
                                 @Valid @RequestBody VisitEditDto visit) {
 
-        this.visitService.createVisit(ownerId, petId, visit, VisitTransformers.toEntity());
+        this.visitService.createVisit(ownerId, petId, visit, VisitTransformers.toVisit());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -56,7 +56,7 @@ public class VisitController {
                                 @PathVariable("visitId") Long visitId,
                                 @Valid @RequestBody VisitEditDto visit) {
 
-        this.visitService.updateVisit(ownerId, petId, visitId, visit, VisitTransformers.updateVisit());
+        this.visitService.updateVisit(ownerId, petId, visitId, visit, VisitTransformers.toVisit());
         return ResponseEntity.noContent().build();
     }
 

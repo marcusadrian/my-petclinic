@@ -7,7 +7,6 @@ import org.adrian.mypetclinic.dto.OwnerSummaryDto;
 import org.adrian.mypetclinic.dto.PetDto;
 
 import java.util.Comparator;
-import java.util.function.BiConsumer;
 
 public class OwnerTransformers {
 
@@ -46,18 +45,14 @@ public class OwnerTransformers {
         });
     }
 
-    public static BiConsumer<OwnerEditDto, Owner> updateOwner() {
-        return (dto, owner) -> {
+    public static GenericTransformer<OwnerEditDto, Owner> toOwner() {
+        return new GenericTransformer<>(Owner::new, (dto, owner) -> {
             owner.setFirstName(dto.getFirstName());
             owner.setLastName(dto.getLastName());
             owner.setAddress(dto.getAddress());
             owner.setCity(dto.getCity());
             owner.setTelephone(dto.getTelephone());
-        };
-    }
-
-    public static GenericTransformer<OwnerEditDto, Owner> toOwner() {
-        return new GenericTransformer<>(Owner::new, updateOwner());
+        });
     }
 
 }
