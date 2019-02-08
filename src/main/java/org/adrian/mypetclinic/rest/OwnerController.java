@@ -15,6 +15,7 @@
  */
 package org.adrian.mypetclinic.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.adrian.mypetclinic.dto.BaseDto;
 import org.adrian.mypetclinic.dto.OwnerDetailDto;
 import org.adrian.mypetclinic.dto.OwnerEditDto;
@@ -40,13 +41,10 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/owners")
+@RequiredArgsConstructor
 class OwnerController {
 
     private final OwnerService service;
-
-    OwnerController(OwnerService service) {
-        this.service = service;
-    }
 
     @GetMapping(value = "/{ownerId}")
     ResponseEntity<OwnerDetailDto> find(@PathVariable("ownerId") Long ownerId) {

@@ -16,9 +16,9 @@
 package org.adrian.mypetclinic.format;
 
 
+import lombok.RequiredArgsConstructor;
 import org.adrian.mypetclinic.domain.PetType;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
 
@@ -38,15 +38,10 @@ import java.util.Locale;
  * @author Marcus Adrian
  */
 @Component
+@RequiredArgsConstructor
 public class PetTypeFormatter implements Formatter<PetType> {
 
     private final PetTypeRepository repository;
-
-
-    @Autowired
-    public PetTypeFormatter(PetTypeRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public String print(PetType petType, Locale locale) {

@@ -1,6 +1,7 @@
 package org.adrian.mypetclinic.service;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import lombok.RequiredArgsConstructor;
 import org.adrian.mypetclinic.domain.Owner;
 import org.adrian.mypetclinic.domain.Pet;
 import org.adrian.mypetclinic.exception.PetClinicBusinessException;
@@ -15,15 +16,11 @@ import java.util.function.Function;
 import static org.adrian.mypetclinic.predicate.PetPredicates.*;
 
 @Service
+@RequiredArgsConstructor
 public class PetService {
 
     private final PetRepository repository;
     private final OwnerService ownerService;
-
-    public PetService(PetRepository repository, OwnerService ownerService) {
-        this.repository = repository;
-        this.ownerService = ownerService;
-    }
 
     @Transactional
     public Optional<Pet> findPet(Long ownerId, Long petId) {

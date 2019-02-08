@@ -1,6 +1,7 @@
 package org.adrian.mypetclinic.service;
 
 import com.querydsl.core.types.Predicate;
+import lombok.RequiredArgsConstructor;
 import org.adrian.mypetclinic.domain.Owner;
 import org.adrian.mypetclinic.repo.OwnerRepository;
 import org.adrian.mypetclinic.transform.GeneralTransformers;
@@ -14,12 +15,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class OwnerService {
     private final OwnerRepository repository;
-
-    public OwnerService(OwnerRepository repository) {
-        this.repository = repository;
-    }
 
     @Transactional(readOnly = true)
     public <T> Page<T> findOwners(Predicate predicate, Function<Owner, T> transformer, Pageable pageable) {

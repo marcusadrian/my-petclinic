@@ -1,20 +1,21 @@
 package org.adrian.mypetclinic.transform;
 
-import java.util.*;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@RequiredArgsConstructor
 public class GenericTransformer<S, T> implements Function<S, T>, BiConsumer<S, T> {
 
-    private Supplier<T> targetSupplier;
-    private BiConsumer<S, T> updater;
-
-    public GenericTransformer(Supplier<T> targetSupplier, BiConsumer<S, T> updater) {
-        super();
-        this.targetSupplier = targetSupplier;
-        this.updater = updater;
-    }
+    private final Supplier<T> targetSupplier;
+    private final BiConsumer<S, T> updater;
 
     /**
      * Updates target with the source attributes.
@@ -24,9 +25,7 @@ public class GenericTransformer<S, T> implements Function<S, T>, BiConsumer<S, T
      * @return {@code null} if source is {@code null}, otherwise the transformed object
      */
     @Override
-    public void accept(S source, T target) {
-        Objects.requireNonNull(source, "source == null");
-        Objects.requireNonNull(target, "target == null");
+    public void accept(@NonNull S source,@NonNull T target) {
         doTransform(source, target);
     }
 
@@ -82,8 +81,7 @@ public class GenericTransformer<S, T> implements Function<S, T>, BiConsumer<S, T
      * @param targets not {@code null}
      * @return the passed in {@code targets} parameter to enable a fluent programming style
      */
-    public <C extends Collection<? super T>> C apply(Collection<? extends S> sources, C targets) {
-        Objects.requireNonNull(targets, "targets == null");
+    public <C extends Collection<? super T>> C apply(Collection<? extends S> sources, @NonNull C targets) {
         if (sources != null) {
             for (S source : sources) {
                 targets.add(apply(source));

@@ -1,5 +1,6 @@
 package org.adrian.mypetclinic.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.adrian.mypetclinic.dto.PetEditDto;
 import org.adrian.mypetclinic.repo.PetTypeRepository;
 import org.adrian.mypetclinic.service.PetService;
@@ -18,15 +19,11 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/owners/{ownerId}/pets")
+@RequiredArgsConstructor
 class PetController {
 
     private final PetService service;
     private final PetTypeRepository petTypeRepository;
-
-    PetController(PetService service, PetTypeRepository petTypeRepository) {
-        this.service = service;
-        this.petTypeRepository = petTypeRepository;
-    }
 
     @GetMapping("/new")
     ResponseEntity<PetEditDto> prepareNew(@PathVariable("ownerId") Long ownerId) {

@@ -1,5 +1,6 @@
 package org.adrian.mypetclinic.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.adrian.mypetclinic.dto.VisitEditDto;
 import org.adrian.mypetclinic.service.VisitService;
 import org.adrian.mypetclinic.transform.VisitTransformers;
@@ -19,13 +20,10 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/owners/{ownerId}/pets/{petId}/visits")
+@RequiredArgsConstructor
 public class VisitController {
 
     private final VisitService visitService;
-
-    VisitController(VisitService visitService) {
-        this.visitService = visitService;
-    }
 
     @GetMapping("/new")
     ResponseEntity<VisitEditDto> prepareNew(@PathVariable("ownerId") Long ownerId,

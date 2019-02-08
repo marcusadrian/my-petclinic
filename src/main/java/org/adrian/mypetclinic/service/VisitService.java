@@ -1,5 +1,6 @@
 package org.adrian.mypetclinic.service;
 
+import lombok.RequiredArgsConstructor;
 import org.adrian.mypetclinic.domain.Pet;
 import org.adrian.mypetclinic.domain.Visit;
 import org.adrian.mypetclinic.predicate.VisitPredicates;
@@ -12,15 +13,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class VisitService {
 
     private final VisitRepository repository;
     private final PetService petService;
-
-    public VisitService(VisitRepository repository, PetService petService) {
-        this.repository = repository;
-        this.petService = petService;
-    }
 
     @Transactional(readOnly = true)
     public <T> Optional<T> findVisit(Long ownerId, Long petId, Long visitId, Function<Visit, T> transformer) {

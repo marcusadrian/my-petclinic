@@ -10,7 +10,6 @@ public class PetPredicates {
         return QPet.pet.owner.id.eq(ownerId);
     }
 
-
     public static BooleanExpression id(Long petId) {
         return QPet.pet.id.eq(petId);
     }
