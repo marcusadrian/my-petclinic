@@ -4,7 +4,6 @@ import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.adrian.mypetclinic.domain.Owner;
 import org.adrian.mypetclinic.repo.OwnerRepository;
-import org.adrian.mypetclinic.transform.GeneralTransformers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,8 +20,7 @@ public class OwnerService {
 
     @Transactional(readOnly = true)
     public <T> Page<T> findOwners(Predicate predicate, Function<Owner, T> transformer, Pageable pageable) {
-        Page<Owner> ownerPage = repository.findAll(predicate, pageable);
-        return GeneralTransformers.pageTransformer(transformer, pageable).apply(ownerPage);
+        return repository.findAll(predicate, pageable).map(transformer);
     }
 
     @Transactional(readOnly = true)
