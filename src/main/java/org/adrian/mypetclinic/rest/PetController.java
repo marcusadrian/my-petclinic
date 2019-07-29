@@ -38,13 +38,13 @@ class PetController {
         return ResponseEntity.ok(pet);
     }
 
-    @PutMapping
+    @PostMapping
     ResponseEntity<Void> create(@PathVariable("ownerId") Long ownerId, @Valid @RequestBody PetEditDto pet) {
         this.service.createPet(ownerId, pet, PetTransformers.toPet(this.petTypeRepository));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/{petId}")
+    @PutMapping("/{petId}")
     ResponseEntity<Void> update(@PathVariable("ownerId") Long ownerId,
                                 @PathVariable("petId") Long petId,
                                 @Valid @RequestBody PetEditDto pet) {

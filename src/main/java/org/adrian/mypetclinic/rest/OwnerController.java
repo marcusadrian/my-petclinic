@@ -69,13 +69,13 @@ class OwnerController {
         return ResponseEntity.ok(page);
     }
 
-    @PostMapping("/{ownerId}")
+    @PutMapping("/{ownerId}")
     ResponseEntity<Void> update(@Valid @RequestBody OwnerEditDto owner, @PathVariable("ownerId") Long ownerId) {
         this.service.updateOwner(ownerId, owner, OwnerTransformers.toOwner());
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping
+    @PostMapping
     ResponseEntity<BaseDto> create(@Valid @RequestBody OwnerEditDto owner) {
         BaseDto createdOwner = this.service.createOwner(
                 owner,

@@ -39,7 +39,7 @@ public class VisitController {
         return ResponseEntity.ok(visit);
     }
 
-    @PutMapping
+    @PostMapping
     ResponseEntity<Void> create(@PathVariable("ownerId") Long ownerId,
                                 @PathVariable("petId") Long petId,
                                 @Valid @RequestBody VisitEditDto visit) {
@@ -48,7 +48,7 @@ public class VisitController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/{visitId}")
+    @PutMapping("/{visitId}")
     ResponseEntity<Void> update(@PathVariable("ownerId") Long ownerId,
                                 @PathVariable("petId") Long petId,
                                 @PathVariable("visitId") Long visitId,
