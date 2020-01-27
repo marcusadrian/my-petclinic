@@ -20,7 +20,13 @@ public class OwnerService {
 
     @Transactional(readOnly = true)
     public <T> Page<T> findOwners(Predicate predicate, Function<Owner, T> transformer, Pageable pageable) {
-        return repository.findAll(predicate, pageable).map(transformer);
+        Page<Owner> page;
+        if(predicate != null) {
+            page = repository.findAll(predicate, pageable);
+        } else {
+            page = repository.findAll(pageable);
+        }
+        return page.map(transformer);
     }
 
     @Transactional(readOnly = true)
