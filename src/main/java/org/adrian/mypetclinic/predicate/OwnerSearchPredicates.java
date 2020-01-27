@@ -2,6 +2,7 @@ package org.adrian.mypetclinic.predicate;
 
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.adrian.mypetclinic.domain.QOwner;
 import org.adrian.mypetclinic.service.OwnerSearchCriteria;
 import org.adrian.mypetclinic.util.QuerydslPredicateUtils;
@@ -18,37 +19,37 @@ public class OwnerSearchPredicates {
                 petName(criteria));
     }
 
-    private static Predicate firstName(OwnerSearchCriteria criteria) {
+    private static BooleanExpression firstName(OwnerSearchCriteria criteria) {
         return QuerydslPredicateUtils.createPredicate(criteria,
                 OwnerSearchCriteria::getFirstName,
                 QOwner.owner.firstName::startsWithIgnoreCase);
     }
 
-    private static Predicate lastName(OwnerSearchCriteria criteria) {
+    private static BooleanExpression lastName(OwnerSearchCriteria criteria) {
         return QuerydslPredicateUtils.createPredicate(criteria,
                 OwnerSearchCriteria::getLastName,
                 QOwner.owner.lastName::startsWithIgnoreCase);
     }
 
-    private static Predicate address(OwnerSearchCriteria criteria) {
+    private static BooleanExpression address(OwnerSearchCriteria criteria) {
         return QuerydslPredicateUtils.createPredicate(criteria,
                 OwnerSearchCriteria::getAddress,
                 QOwner.owner.address::containsIgnoreCase);
     }
 
-    private static Predicate city(OwnerSearchCriteria criteria) {
+    private static BooleanExpression city(OwnerSearchCriteria criteria) {
         return QuerydslPredicateUtils.createPredicate(criteria,
                 OwnerSearchCriteria::getCity,
                 QOwner.owner.city::startsWithIgnoreCase);
     }
 
-    private static Predicate telephone(OwnerSearchCriteria criteria) {
+    private static BooleanExpression telephone(OwnerSearchCriteria criteria) {
         return QuerydslPredicateUtils.createPredicate(criteria,
                 OwnerSearchCriteria::getTelephone,
                 QOwner.owner.telephone::containsIgnoreCase);
     }
 
-    private static Predicate petName(OwnerSearchCriteria criteria) {
+    private static BooleanExpression petName(OwnerSearchCriteria criteria) {
         return QuerydslPredicateUtils.createPredicate(criteria,
                 OwnerSearchCriteria::getPetName,
                 QOwner.owner.pets.any().name::startsWithIgnoreCase);

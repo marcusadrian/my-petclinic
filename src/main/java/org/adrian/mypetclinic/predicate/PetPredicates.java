@@ -18,7 +18,7 @@ public class PetPredicates {
         return QPet.pet.name.eq(name);
     }
 
-    public static Predicate findByIdPath(Long ownerId, Long petId) {
+    public static BooleanExpression findByIdPath(Long ownerId, Long petId) {
         return owner(ownerId).and(id(petId));
     }
 
