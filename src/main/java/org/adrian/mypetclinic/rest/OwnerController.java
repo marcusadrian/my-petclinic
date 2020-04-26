@@ -48,14 +48,12 @@ class OwnerController {
 
     @GetMapping(value = "/{ownerId}")
     ResponseEntity<OwnerDetailDto> find(@PathVariable("ownerId") Long ownerId) {
-        OwnerDetailDto owner = this.service.findById(ownerId, OwnerTransformers.toDetailDto()).get();
-        return ResponseEntity.ok(owner);
+       return ResponseEntity.of(this.service.findById(ownerId, OwnerTransformers.toDetailDto()));
     }
 
     @GetMapping(value = "/{ownerId}/edit")
     ResponseEntity<OwnerEditDto> prepareEdit(@PathVariable("ownerId") Long ownerId) {
-        OwnerEditDto owner = this.service.findById(ownerId, OwnerTransformers.toEditDto()).get();
-        return ResponseEntity.ok(owner);
+        return ResponseEntity.of(this.service.findById(ownerId, OwnerTransformers.toEditDto()));
     }
 
     @GetMapping(value = "/search")
