@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class OwnerControllerTest {
 
     @Autowired
@@ -37,7 +39,7 @@ class OwnerControllerTest {
         OwnerDetailDto owner = this.service.findById(id, OwnerTransformers.toDetailDto()).get();
 
         // When
-        ResultActions resultActions = mvc.perform(get("/owners/{id}", id));
+        ResultActions resultActions = this.mvc.perform(get("/owners/{id}", id));
         // Then
         resultActions
                 .andDo(print())

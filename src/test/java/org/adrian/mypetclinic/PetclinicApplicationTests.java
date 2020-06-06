@@ -1,11 +1,12 @@
 package org.adrian.mypetclinic;
 
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
-//@Disabled
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
 public class PetclinicApplicationTests {
 
-	//@Test
+	@Test
 	public void contextLoads() {
 	}
 
