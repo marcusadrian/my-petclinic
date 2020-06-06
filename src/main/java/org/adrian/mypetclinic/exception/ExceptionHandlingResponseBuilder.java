@@ -7,20 +7,20 @@ import java.util.Map;
 
 
 public class ExceptionHandlingResponseBuilder {
-    private List<Map<String, Object>> errors = new ArrayList<>();
+    private final List<Map<String, Object>> errors = new ArrayList<>();
     private Map<String, Object> currentError;
-    private Map<String, Object> global = new LinkedHashMap<>();
+    private final Map<String, Object> global = new LinkedHashMap<>();
 
     public ExceptionHandlingResponseBuilder put(String key, Object value) {
         if (this.currentError == null) {
-            createNewError();
+            this.createNewError();
         }
         this.currentError.put(key, value);
         return this;
     }
 
     public ExceptionHandlingResponseBuilder newError() {
-        createNewError();
+        this.createNewError();
         return this;
     }
 
@@ -29,9 +29,9 @@ public class ExceptionHandlingResponseBuilder {
         return this;
     }
 
-    public Map<String, Object> getErrorMap() {
-        Map<String, Object> errorMap = new LinkedHashMap<>(global);
-        errorMap.put("errors", errors);
+    public Map<String, Object> build() {
+        Map<String, Object> errorMap = new LinkedHashMap<>(this.global);
+        errorMap.put("errors", this.errors);
         return errorMap;
     }
 
@@ -40,4 +40,7 @@ public class ExceptionHandlingResponseBuilder {
         this.errors.add(this.currentError);
     }
 
+    public boolean hasErrors() {
+        return !this.errors.isEmpty();
+    }
 }
