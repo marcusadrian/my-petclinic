@@ -75,21 +75,24 @@ class PetclinicExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception e, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String message = e.getMessage();
-        if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
-            log.error("{}", message, e);
-        } else {
-            log.info("Failing Request : {}", message);
-        }
+        this.logException(e, status);
         HttpHeaders notNullHeaders = Optional.ofNullable(headers).orElse(new HttpHeaders());
         Object notNullBody = Optional.ofNullable(body).orElse(this.builder(e, status)
-                .put(MESSAGE, message)
+                .put(MESSAGE, e.getMessage())
                 .build());
         super.handleExceptionInternal(e, notNullBody, notNullHeaders, status, request);
         return ResponseEntity
                 .status(status)
                 .headers(notNullHeaders)
                 .body(notNullBody);
+    }
+
+    private void logException(Exception e, HttpStatus status) {
+        if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
+            log.error("{}", e.getMessage(), e);
+        } else {
+            log.info("Failing Request : {}", e.getMessage());
+        }
     }
 
     private ExceptionHandlingResponseBuilder builder(Exception e, HttpStatus status) {
