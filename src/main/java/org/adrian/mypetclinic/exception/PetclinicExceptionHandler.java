@@ -12,7 +12,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.adrian.mypetclinic.exception.ExceptionAttributes.*;
@@ -23,38 +22,41 @@ class PetclinicExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
     ResponseEntity<Map<String, Object>> constraintViolationException(ConstraintViolationException e) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        ExceptionHandlingResponseBuilder builder = this.builder(status);
+        ExceptionHandlingResponseBuilder builder = this.builder(e, HttpStatus.BAD_REQUEST);
         e.getConstraintViolations().forEach(
                 constraintViolation -> this.putConstraintViolation(builder, constraintViolation));
-        return ResponseEntity.status(status).body(builder.build());
+        return ResponseEntity.status(builder.getStatus()).body(builder.build());
     }
 
     @ExceptionHandler
     ResponseEntity<Map<String, Object>> petClinicBusinessException(PetClinicBusinessException e) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        return ResponseEntity.status(status).body(
-                this.builder(status)
-                        .put(MESSAGE, String.valueOf(e.getMessage()))
-                        .put(PROPERTY_PATH, String.valueOf(e.getPropertyPath()))
-                        .put(INVALID_VALUE, String.valueOf(e.getInvalidValue()))
-                        .put(MESSAGE_TEMPLATE, e.getMessageTemplate())
-                        .build());
+        ExceptionHandlingResponseBuilder builder = this.builder(e, HttpStatus.BAD_REQUEST)
+                .put(MESSAGE, String.valueOf(e.getMessage()))
+                .put(PROPERTY_PATH, String.valueOf(e.getPropertyPath()))
+                .put(INVALID_VALUE, String.valueOf(e.getInvalidValue()))
+                .put(MESSAGE_TEMPLATE, e.getMessageTemplate());
+        return ResponseEntity.status(builder.getStatus()).body(builder.build());
+    }
+
+    @ExceptionHandler
+    ResponseEntity<Object> fallback(Exception e, HttpHeaders headers, WebRequest request) {
+        ExceptionHandlingResponseBuilder builder = this.builder(e, HttpStatus.BAD_REQUEST)
+                .put(MESSAGE, String.valueOf(e.getMessage()));
+        return this.handleExceptionInternal(e, builder.build(), headers, builder.getStatus(), request);
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
-        ExceptionHandlingResponseBuilder builder = this.builder(badRequest);
-        ex.getBindingResult().getFieldErrors().stream()
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ExceptionHandlingResponseBuilder builder = this.builder(e, HttpStatus.BAD_REQUEST);
+        e.getBindingResult().getFieldErrors().stream()
                 .filter(fieldError -> fieldError.contains(ConstraintViolation.class))
                 .map(fieldError -> fieldError.unwrap(ConstraintViolation.class))
                 .forEach(constraintViolation -> this.putConstraintViolation(builder, constraintViolation));
 
         if (builder.hasErrors()) {
-            return ResponseEntity.status(badRequest).body(builder.build());
+            return ResponseEntity.status(builder.getStatus()).body(builder.build());
         } else {
-            return super.handleMethodArgumentNotValid(ex, headers, status, request);
+            return super.handleMethodArgumentNotValid(e, headers, status, request);
         }
     }
 
@@ -68,21 +70,19 @@ class PetclinicExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        super.handleExceptionInternal(ex, body, headers, status, request);
-        String message = ex.getMessage();
-        log.error(message, ex);
+    protected ResponseEntity<Object> handleExceptionInternal(Exception e, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        super.handleExceptionInternal(e, body, headers, status, request);
+        String message = e.getMessage();
+        log.error(message, e);
         return ResponseEntity
                 .status(status)
                 .headers(headers)
-                .body(this.builder(status)
+                .body(this.builder(e, status)
                         .put(MESSAGE, message)
                         .build());
     }
 
-    private ExceptionHandlingResponseBuilder builder(HttpStatus status) {
-        return new ExceptionHandlingResponseBuilder()
-                .globalInfo(TIMESTAMP, LocalDateTime.now())
-                .globalInfo(STATUS, status.value());
+    private ExceptionHandlingResponseBuilder builder(Exception e, HttpStatus status) {
+        return new ExceptionHandlingResponseBuilder(e, status);
     }
 }

@@ -10,5 +10,6 @@ public class ExceptionAttributes {
     public static final String INVALID_VALUE = "invalidValue";
     public static final String MESSAGE_TEMPLATE = "messageTemplate";
     public static final String TIMESTAMP = "timestamp";
+    public static final String EXCEPTION = "exception";
     public static final String STATUS = "status";
 }
