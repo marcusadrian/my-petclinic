@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.adrian.mypetclinic.exception.ExceptionAttributes.*;
 
@@ -31,18 +32,21 @@ class PetclinicExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     ResponseEntity<Map<String, Object>> petClinicBusinessException(PetClinicBusinessException e) {
         ExceptionHandlingResponseBuilder builder = this.builder(e, HttpStatus.BAD_REQUEST)
-                .put(MESSAGE, String.valueOf(e.getMessage()))
+                .put(MESSAGE, e.getMessage())
                 .put(PROPERTY_PATH, String.valueOf(e.getPropertyPath()))
-                .put(INVALID_VALUE, String.valueOf(e.getInvalidValue()))
+                .put(INVALID_VALUE, e.getInvalidValue())
                 .put(MESSAGE_TEMPLATE, e.getMessageTemplate());
         return ResponseEntity.status(builder.getStatus()).body(builder.build());
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    ResponseEntity<Object> fallbackBadRequest(Exception e, WebRequest request) {
+        return this.handleExceptionInternal(e, null, null, HttpStatus.BAD_REQUEST, request);
+    }
+
     @ExceptionHandler
-    ResponseEntity<Object> fallback(Exception e, HttpHeaders headers, WebRequest request) {
-        ExceptionHandlingResponseBuilder builder = this.builder(e, HttpStatus.BAD_REQUEST)
-                .put(MESSAGE, String.valueOf(e.getMessage()));
-        return this.handleExceptionInternal(e, builder.build(), headers, builder.getStatus(), request);
+    ResponseEntity<Object> fallback(Exception e, WebRequest request) {
+        return this.handleExceptionInternal(e, null, null, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
     @Override
@@ -63,7 +67,7 @@ class PetclinicExceptionHandler extends ResponseEntityExceptionHandler {
     private ExceptionHandlingResponseBuilder putConstraintViolation(ExceptionHandlingResponseBuilder builder,
                                                                     ConstraintViolation<?> constraintViolation) {
         return builder.newError()
-                .put(MESSAGE, String.valueOf(constraintViolation.getMessage()))
+                .put(MESSAGE, constraintViolation.getMessage())
                 .put(PROPERTY_PATH, String.valueOf(constraintViolation.getPropertyPath()))
                 .put(INVALID_VALUE, String.valueOf(constraintViolation.getInvalidValue()))
                 .put(MESSAGE_TEMPLATE, constraintViolation.getMessageTemplate());
@@ -71,15 +75,21 @@ class PetclinicExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception e, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        super.handleExceptionInternal(e, body, headers, status, request);
         String message = e.getMessage();
-        log.error(message, e);
+        if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
+            log.error("{}", message, e);
+        } else {
+            log.info("Failing Request : {}", message);
+        }
+        HttpHeaders notNullHeaders = Optional.ofNullable(headers).orElse(new HttpHeaders());
+        Object notNullBody = Optional.ofNullable(body).orElse(this.builder(e, status)
+                .put(MESSAGE, message)
+                .build());
+        super.handleExceptionInternal(e, notNullBody, notNullHeaders, status, request);
         return ResponseEntity
                 .status(status)
-                .headers(headers)
-                .body(this.builder(e, status)
-                        .put(MESSAGE, message)
-                        .build());
+                .headers(notNullHeaders)
+                .body(notNullBody);
     }
 
     private ExceptionHandlingResponseBuilder builder(Exception e, HttpStatus status) {
